@@ -1,0 +1,125 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:injectable/injectable.dart';
+import 'package:sadasbor_v2/core/extensions/context_extension.dart';
+
+import '../../config/theme/theme.dart';
+import '../components/space/space_component.dart';
+import '../error/failures.dart';
+
+enum ErrorType {
+  noInternet,
+  noResponse,
+  responseInvalid,
+  requestFailed,
+  systemOffline,
+  unKnownError,
+  timeoutError,
+  authError,
+  sessionError,
+  serverError,
+  backendError,
+  dtoParsingError,
+}
+
+@lazySingleton
+class ErrorUtil {
+  //* Error Handling Widget
+  Widget widgetError(BuildContext context, FlutterErrorDetails? error) {
+    if (kDebugMode) {
+      return Scaffold(
+        backgroundColor: AccurateColor.whiteAccurate,
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(35),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/svg/ic_crash.svg',
+                ),
+                SpaceComponentHeight(height: 24),
+                Text(
+                  context.tr("global_internal_mistake"),
+                  style: context.textTheme.headlineLarge,
+                ),
+                SpaceComponentHeight(height: 16),
+                Text(
+                  context.tr('global_suffer_internal_error'),
+                  style: context.textTheme.bodyLarge,
+                ),
+                SpaceComponentHeight(height: 24),
+                // ButtonComponent(
+                //   text: context.tr('global_closed'),
+                //   onPressed: () => exit(0),
+                // ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AccurateColor.whiteAccurate,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(35),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/svg/ic_crash.svg',
+              ),
+              SpaceComponentHeight(height: 24),
+              Text(
+                context.tr("global_internal_mistake"),
+                style: context.textTheme.headlineLarge,
+              ),
+              SpaceComponentHeight(height: 16),
+              Text(
+                context.tr('global_suffer_internal_error'),
+                style: context.textTheme.bodyLarge,
+              ),
+              SpaceComponentHeight(height: 24),
+              // ButtonComponent(
+              //   text: context.tr('global_closed'),
+              //   onPressed: () => exit(0),
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  //* DioException Handling Exeptions
+  Failure dioCatchError(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return TimeoutFailure(message: e.error.toString());
+    } else if (e.type == DioExceptionType.badResponse) {
+      if (e.error!.toString().contains('Sesi login anda telah berakhir')) {
+        return const SessionFailure();
+      }
+      return BackendFailure(
+        message: e.error.toString(),
+      );
+    } else {
+      if (e.error!.toString().contains('SocketException')) {
+        return const NoInternetFailure();
+      }
+      return const UnknownFailure();
+    }
+  }
+
+}

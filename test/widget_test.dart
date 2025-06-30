@@ -1,9 +1,9 @@
-// This is a basic Flutter widgets test.
+// This is a basic Flutter components test.
 //
-// To perform an interaction with a widgets in your test, use the WidgetTester
+// To perform an interaction with a components in your test, use the WidgetTester
 // utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widgets
-// tree, read text, and verify that the values of widgets properties are correct.
+// gestures. You can also use WidgetTester to find child components in the components
+// tree, read text, and verify that the values of components properties are correct.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,7 +13,7 @@ import 'package:sadasbor_v2/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MainPage());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
