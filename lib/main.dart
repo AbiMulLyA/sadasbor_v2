@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart'; // Ditambahkan impor flutter_hooks
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -26,7 +27,7 @@ import 'core/utils/error_util.dart';
 import 'core/utils/global_util.dart';
 import 'core/utils/theme_util.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/home/presentation/pages/home_page.dart';
+import 'features/dashboard/presentation/pages/dashboard_page.dart';
 
 Future<void> main() async {
   debugPrint('ENV:::::::${Env.dev}');
@@ -209,52 +210,17 @@ class _AppState extends State<App> {
 }
 
 @RoutePage()
-class MainPage extends StatefulWidget {
+class MainPage extends HookWidget { // Diubah menjadi HookWidget
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return const MyHomePage(title: '');
-    /*    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Template Widget'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );*/
+    // Langsung mengembalikan DashboardPage, kode stateful yang tidak perlu dihapus
+    return const DashboardPage();
   }
 }
+
+// Kelas _MainPageState telah dihapus
 
 class MyHttpOverrides extends HttpOverrides {
   @override
