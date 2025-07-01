@@ -49,14 +49,14 @@ class PresensiInOutView extends HookWidget {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    "Absen Masuk",
+                    "Datang",
                     textAlign: TextAlign.center,
                     style: labelTextStyle,
                   ),
                 ),
                 Expanded(
                   child: Text(
-                    "Absen Keluar",
+                    "Pulang",
                     textAlign: TextAlign.center,
                     style: labelTextStyle,
                   ),
@@ -91,7 +91,7 @@ class PresensiInOutView extends HookWidget {
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.login),
                     label: const Text(
-                      "Clock In",
+                      "Absen Datang",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
@@ -109,7 +109,7 @@ class PresensiInOutView extends HookWidget {
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.logout),
                     label: const Text(
-                      "Clock Out",
+                      "Absen Pulang",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
