@@ -48,37 +48,43 @@ class PresensiHistoryView extends HookWidget {
     ];
 
     final subTextStyle = TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold, fontSize: 12);
-    final mainTimeStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 14);
-    final dateStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87);
+    final mainTimeStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black87);
+    final dateStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black54);
 
-    Widget buildStatusChip(String status, bool isTepatWaktu) {
-      return Chip(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        label: Text(
-          status,
-          style: TextStyle(
-            color: isTepatWaktu ? Colors.green[700] : Colors.red[700],
-            fontWeight: FontWeight.bold,
-            fontSize: 11,
-          ),
+    // Widget baru untuk menampilkan status dengan lebih jelas
+    Widget buildStatusDisplay(String status, bool isTepatWaktu) {
+      IconData statusIconData = isTepatWaktu ? Icons.check_circle_outline : Icons.highlight_off;
+      Color statusColor = isTepatWaktu ? Colors.green.shade700 : Colors.red.shade700;
+      Color backgroundColor = isTepatWaktu ? Colors.green.shade50 : Colors.red.shade50;
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(20),
         ),
-        backgroundColor: isTepatWaktu ? Colors.green[100] : Colors.red[100],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(
-            color: isTepatWaktu ? Colors.green[200]! : Colors.red[200]!,
-            width: 1
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(statusIconData, color: statusColor, size: 16),
+            const SizedBox(width: 6),
+            Text(
+              status,
+              style: TextStyle(
+                color: statusColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
+              ),
+            ),
+          ],
         ),
-        labelPadding: EdgeInsets.zero, // Remove default padding if any
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // To make chip smaller
       );
     }
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Agar Column hanya setinggi kontennya
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           // Header Row
@@ -103,7 +109,7 @@ class PresensiHistoryView extends HookWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue, // Menggunakan warna primer tema
+                    color: Colors.blue,
                   ),
                 ),
               ),
@@ -113,72 +119,82 @@ class PresensiHistoryView extends HookWidget {
 
           // List Card (Maksimal 3)
           ListView.separated(
-            itemCount: historyList.length > 3 ? 3 : historyList.length, // Batasi maksimal 3 item
-            shrinkWrap: true, // Agar ListView menyesuaikan dengan kontennya di dalam Column
-            physics: const NeverScrollableScrollPhysics(), // Non-scrollable karena sudah di dalam Column
+            itemCount: historyList.length > 3 ? 3 : historyList.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = historyList[index];
               return Card(
                 color: Colors.white,
-                elevation: 1.5,
+                elevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
-                  side: BorderSide(color: Colors.grey[300]!, width: 1.0),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
+                clipBehavior: Clip.antiAlias,
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      // Row Datang
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Flexible( // Untuk fleksibilitas
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text("Datang", style: subTextStyle),
-                                const SizedBox(height: 2),
-                                Text(item.jamDatang, style: mainTimeStyle),
-                              ],
-                            ),
-                          ),
-                          Flexible( // Untuk fleksibilitas
-                            child: Text(
-                              item.tanggal,
-                              style: dateStyle,
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                        ],
+                      // Bilah Warna Vertikal
+                      Container(
+                        width: 7.0,
+                        color: item.tepatWaktu ? Colors.green.shade400 : Colors.red.shade400,
                       ),
-                      const SizedBox(height: 10),
-                      Divider(color: Colors.grey[200], thickness: 1.5,),
-                      const SizedBox(height: 10),
-                      // Row Pulang
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Flexible( // Untuk fleksibilitas
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text("Pulang", style: subTextStyle),
-                                const SizedBox(height: 2),
-                                Text(item.jamPulang, style: mainTimeStyle),
-                              ],
-                            ),
+                      // Konten Utama Kartu
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              // ROW: DATANG (Kiri) & TANGGAL (Kanan)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start, // Agar align dengan "Datang"
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Datang", style: subTextStyle),
+                                      const SizedBox(height: 3),
+                                      Text(item.jamDatang, style: mainTimeStyle),
+                                    ],
+                                  ),
+                                  Text(
+                                    item.tanggal,
+                                    style: dateStyle,
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+
+                              // ROW: DIVIDER (Expanded) & STATUS
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: 1.0,
+                                      color: Colors.grey[300],
+                                      margin: const EdgeInsets.only(right: 8.0), // Jarak ke status
+                                    ),
+                                  ),
+                                  buildStatusDisplay(item.statusKehadiran, item.tepatWaktu),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+
+                              // PULANG
+                              Text("Pulang", style: subTextStyle),
+                              const SizedBox(height: 3),
+                              Text(item.jamPulang, style: mainTimeStyle),
+                              const SizedBox(height: 4),
+                            ],
                           ),
-                          Flexible( // Untuk fleksibilitas
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: buildStatusChip(item.statusKehadiran, item.tepatWaktu)
-                            )
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
