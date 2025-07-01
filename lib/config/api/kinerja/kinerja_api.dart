@@ -9,5 +9,6 @@ abstract class KinerjaApi {
   static const int defFetchLimit = 10;
 
   String baseUrl();
+
   String environment();
 }

@@ -5,11 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 enum PopList { block, detail, delete, edit, report }
 
-enum ThemeType {
-  dark,
-  light,
-  defaults,
-}
+enum ThemeType { dark, light, defaults }
 
 /// padding left and right = 16
 double kDefLeftRight = 16;
@@ -47,9 +43,7 @@ final ThemeData themeDark = ThemeData(
   dialogBackgroundColor: const Color(0xff424242),
   indicatorColor: const Color(0xff2283F5),
   hintColor: const Color(0x80ffffff),
-  bottomAppBarTheme: const BottomAppBarTheme(
-    color: Color(0xff424242),
-  ),
+  bottomAppBarTheme: const BottomAppBarTheme(color: Color(0xff424242)),
   toggleButtonsTheme: const ToggleButtonsThemeData(
     color: AccurateColor.blueAccurate,
   ),
@@ -71,9 +65,7 @@ final ThemeData themeDark = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AccurateColor.blueAccurate,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
     ),
   ),
   buttonTheme: const ButtonThemeData(
@@ -82,10 +74,7 @@ final ThemeData themeDark = ThemeData(
     height: 36.0,
     padding: EdgeInsets.only(top: 0.0, bottom: 0.0, left: 16.0, right: 16.0),
     shape: RoundedRectangleBorder(
-      side: BorderSide(
-        color: Color(0xff000000),
-        width: 0.0,
-      ),
+      side: BorderSide(color: Color(0xff000000), width: 0.0),
       borderRadius: BorderRadius.all(Radius.circular(2.0)),
     ),
     alignedDropdown: false,
@@ -239,10 +228,7 @@ final ThemeData themeDark = ThemeData(
     ),
     isDense: true,
     contentPadding: EdgeInsets.symmetric(vertical: 15),
-    errorStyle: TextStyle(
-      color: Color(0xffd32f2f),
-      fontSize: 10,
-    ),
+    errorStyle: TextStyle(color: Color(0xffd32f2f), fontSize: 10),
   ),
   iconTheme: const IconThemeData(
     color: AccurateColor.whiteAccurate,
@@ -328,21 +314,23 @@ final ThemeData themeDark = ThemeData(
     secondarySelectedColor: AccurateColor.whiteAccurate,
     selectedColor: Color(0xffE7F3FB),
     shape: StadiumBorder(
-        side: BorderSide(
-          color: Color(0xff000000),
-          width: 0.0,
-          //style: BorderStyle.none,
-        )),
+      side: BorderSide(
+        color: Color(0xff000000),
+        width: 0.0,
+        //style: BorderStyle.none,
+      ),
+    ),
   ),
   dialogTheme: const DialogThemeData(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: Color(0xff000000),
-          width: 0.0,
-          //style: BorderStyle.none,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      )),
+    shape: RoundedRectangleBorder(
+      side: BorderSide(
+        color: Color(0xff000000),
+        width: 0.0,
+        //style: BorderStyle.none,
+      ),
+      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+    ),
+  ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
   ),
@@ -375,7 +363,7 @@ final ThemeData themeLight = ThemeData(
     600: Color(0xff095ec3),
     700: Color(0xff074792),
     800: Color(0xff042f62),
-    900: Color(0xff021831)
+    900: Color(0xff021831),
   }),
   brightness: Brightness.light,
   primaryColor: AccurateColor.blackAccurate,
@@ -397,9 +385,7 @@ final ThemeData themeLight = ThemeData(
   bottomAppBarTheme: const BottomAppBarTheme(
     color: AccurateColor.whiteAccurate,
   ),
-  toggleButtonsTheme: const ToggleButtonsThemeData(
-    color: Color(0xff2283F5),
-  ),
+  toggleButtonsTheme: const ToggleButtonsThemeData(color: Color(0xff2283F5)),
   colorScheme: const ColorScheme(
     primary: Color(0xff2283f5),
     primaryContainer: Color(0xff074792),
@@ -579,10 +565,7 @@ final ThemeData themeLight = ThemeData(
     ),
     isDense: true,
     contentPadding: EdgeInsets.symmetric(vertical: 15),
-    errorStyle: TextStyle(
-      color: Color(0xffd32f2f),
-      fontSize: 10,
-    ),
+    errorStyle: TextStyle(color: Color(0xffd32f2f), fontSize: 10),
   ),
   iconTheme: const IconThemeData(
     color: AccurateColor.blackAccurate,
@@ -668,21 +651,23 @@ final ThemeData themeLight = ThemeData(
     secondarySelectedColor: AccurateColor.gray,
     selectedColor: Color(0xffE7F3FB),
     shape: StadiumBorder(
-        side: BorderSide(
-          color: Color(0xff717684),
-          width: 0.0,
-          style: BorderStyle.none,
-        )),
+      side: BorderSide(
+        color: Color(0xff717684),
+        width: 0.0,
+        style: BorderStyle.none,
+      ),
+    ),
   ),
   dialogTheme: const DialogThemeData(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: Color(0xff717684),
-          width: 0.0,
-          style: BorderStyle.none,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      )),
+    shape: RoundedRectangleBorder(
+      side: BorderSide(
+        color: Color(0xff717684),
+        width: 0.0,
+        style: BorderStyle.none,
+      ),
+      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+    ),
+  ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     foregroundColor: Colors.white,
   ),
@@ -777,55 +762,28 @@ class AccurateColor {
     Color.fromRGBO(199, 199, 199, 0.6),
   ];
 
-  static const List<Color> blueGrad = [
-    Color(0xFF187adf),
-    Color(0xFF00eaf8),
-  ];
+  static const List<Color> blueGrad = [Color(0xFF187adf), Color(0xFF00eaf8)];
 
-  static const List<Color> redGrad = [
-    Color(0xFF8d0914),
-    Color(0xFFf75389),
-  ];
+  static const List<Color> redGrad = [Color(0xFF8d0914), Color(0xFFf75389)];
 
-  static const List<Color> greenGrad = [
-    Color(0xFF0799a7),
-    Color(0xFF2ce2f3),
-  ];
+  static const List<Color> greenGrad = [Color(0xFF0799a7), Color(0xFF2ce2f3)];
 
-  static const List<Color> yellowGrad = [
-    Color(0xFFffc500),
-    Color(0xFFc21500),
-  ];
+  static const List<Color> yellowGrad = [Color(0xFFffc500), Color(0xFFc21500)];
 
-  static const List<Color> purpleGrad = [
-    Color(0xFF450669),
-    Color(0xFFbb958f),
-  ];
+  static const List<Color> purpleGrad = [Color(0xFF450669), Color(0xFFbb958f)];
 
-  static const List<Color> greyGrad = [
-    Color(0xFF444647),
-    Color(0xFFdcdfe0),
-  ];
+  static const List<Color> greyGrad = [Color(0xFF444647), Color(0xFFdcdfe0)];
 
   static const List<Color> blackGrad = [
     AccurateColor.grayA1,
     Color(0xFFdcdfe0),
   ];
 
-  static const List<Color> armyGrad = [
-    Color(0xFF021f09),
-    Color(0xFF1ad145),
-  ];
+  static const List<Color> armyGrad = [Color(0xFF021f09), Color(0xFF1ad145)];
 
-  static const List<Color> purple2Grad = [
-    Color(0xFF060761),
-    Color(0xFF4245ee),
-  ];
+  static const List<Color> purple2Grad = [Color(0xFF060761), Color(0xFF4245ee)];
 
-  static const List<Color> oceanGrad = [
-    Color(0xFF05263b),
-    Color(0xFF2499e2),
-  ];
+  static const List<Color> oceanGrad = [Color(0xFF05263b), Color(0xFF2499e2)];
 
   static const List<Color> whiteGrad = [
     Color(0xFFf9f9f9),
@@ -833,10 +791,7 @@ class AccurateColor {
   ];
 
   static const blue2 = Color(0xFF1976D2);
-  static const List<Color> blueGrad2 = [
-    Color(0xFF2E58A2),
-    AccurateColor.blue2,
-  ];
+  static const List<Color> blueGrad2 = [Color(0xFF2E58A2), AccurateColor.blue2];
 
   static const red2 = Color(0xFFBB477E);
   static const List<Color> redGrad2 = [Color(0xFFBB377D), AccurateColor.red2];
@@ -865,20 +820,14 @@ class AccurateColor {
     AccurateColor.purple2,
   ];
 
-  static const List<Color> blueSoft = [
-    Color(0xFF96DEDA),
-    Color(0xFF50C9C3),
-  ];
+  static const List<Color> blueSoft = [Color(0xFF96DEDA), Color(0xFF50C9C3)];
 
-  static const List<Color> oceanGrad2 = [
-    Color(0xFF7ac8f3),
-    Color(0xFF5ea9d1),
-  ];
+  static const List<Color> oceanGrad2 = [Color(0xFF7ac8f3), Color(0xFF5ea9d1)];
 
   static const bluePrimary = Color(0xFF3B6DAB);
   static List<Color> bluePrimaryGrad = [
     AccurateColor.bluePrimary.withOpacity(0.5),
     AccurateColor.bluePrimary.withOpacity(0.5),
   ];
-// #Endregion
+  // #Endregion
 }

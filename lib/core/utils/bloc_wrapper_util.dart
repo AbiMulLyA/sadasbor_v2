@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../config/router/router.dart';
 
-
 /// A utility class that manages the addition and removal of blocs.
 class BlocWrapperUtil {
   BlocWrapperUtil(this._appRouter);
+
   final AppRouter _appRouter;
 
   final Set<Map<String, Object>> _mapBloc = <Map<String, Object>>{};
@@ -71,7 +71,7 @@ class BlocWrapperUtil {
   bool checkBloc<T>() {
     try {
       return _mapBloc.any(
-            (bloc) => bloc.values.first.runtimeType.toString() == T.toString(),
+        (bloc) => bloc.values.first.runtimeType.toString() == T.toString(),
       );
     } catch (error) {
       return false;
@@ -84,8 +84,8 @@ class BlocWrapperUtil {
   T getBloc<T>() {
     try {
       final data = _mapBloc.lastWhere(
-            (element) =>
-        element.values.first.runtimeType.toString() == T.toString(),
+        (element) =>
+            element.values.first.runtimeType.toString() == T.toString(),
       );
       return data.values.first as T;
     } catch (_) {
@@ -103,9 +103,11 @@ class BlocWrapperUtil {
     for (final bloc in blocs) {
       // Remove the old bloc on the list
       final oldBloc = _mapBloc
-          .where((e) =>
-      e.keys.contains(_appRouter.current.name) &&
-          e.values.contains(bloc))
+          .where(
+            (e) =>
+                e.keys.contains(_appRouter.current.name) &&
+                e.values.contains(bloc),
+          )
           .toList();
 
       if (oldBloc.isNotEmpty) {
@@ -120,9 +122,11 @@ class BlocWrapperUtil {
 
       if (bloc is Bloc) {
         final test = _mapBloc
-            .where((e) =>
-        e.keys.contains(_appRouter.current.name) &&
-            e.values.contains(bloc))
+            .where(
+              (e) =>
+                  e.keys.contains(_appRouter.current.name) &&
+                  e.values.contains(bloc),
+            )
             .toList();
         debugPrint('test: $test');
         _mapBloc.add({_appRouter.current.name: bloc});

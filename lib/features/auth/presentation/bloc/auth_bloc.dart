@@ -11,16 +11,12 @@ part 'auth_state.dart';
 
 @lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc({
-    required this.authUtil,
-  }) : super(const InitialSt());
+  AuthBloc({required this.authUtil}) : super(const InitialSt());
 
   final AuthUtil authUtil;
 
   @override
-  Stream<AuthState> mapEventToState(
-      AuthEvent event,
-      ) async* {
+  Stream<AuthState> mapEventToState(AuthEvent event) async* {
     if (event is AppStartedEv || event is DeepLinkEv) {
       final bool hasToken = await authUtil.hasAccessToken();
       final bool hasSeenOnBoard = await authUtil.hasSeenOnBoard();

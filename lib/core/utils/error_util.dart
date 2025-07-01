@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -43,9 +41,7 @@ class ErrorUtil {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  'assets/svg/ic_crash.svg',
-                ),
+                SvgPicture.asset('assets/svg/ic_crash.svg'),
                 SpaceComponentHeight(height: 24),
                 Text(
                   context.tr("global_internal_mistake"),
@@ -77,9 +73,7 @@ class ErrorUtil {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/svg/ic_crash.svg',
-              ),
+              SvgPicture.asset('assets/svg/ic_crash.svg'),
               SpaceComponentHeight(height: 24),
               Text(
                 context.tr("global_internal_mistake"),
@@ -111,9 +105,7 @@ class ErrorUtil {
       if (e.error!.toString().contains('Sesi login anda telah berakhir')) {
         return const SessionFailure();
       }
-      return BackendFailure(
-        message: e.error.toString(),
-      );
+      return BackendFailure(message: e.error.toString());
     } else {
       if (e.error!.toString().contains('SocketException')) {
         return const NoInternetFailure();
@@ -121,5 +113,4 @@ class ErrorUtil {
       return const UnknownFailure();
     }
   }
-
 }

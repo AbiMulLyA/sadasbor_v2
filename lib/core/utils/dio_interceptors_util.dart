@@ -1,8 +1,6 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
-
 
 @lazySingleton
 class DioInterceptorsUtil extends QueuedInterceptorsWrapper {
@@ -15,9 +13,9 @@ class DioInterceptorsUtil extends QueuedInterceptorsWrapper {
 
   @override
   Future onRequest(
-      RequestOptions options,
-      RequestInterceptorHandler handler,
-      ) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     /*debugPrint(
         "--> onRequest Start ${options.method.toUpperCase()} - ${options.baseUrl}${options.path}");
 
@@ -60,7 +58,9 @@ class DioInterceptorsUtil extends QueuedInterceptorsWrapper {
 
   @override
   Future onResponse(
-      Response response, ResponseInterceptorHandler handler) async {
+    Response response,
+    ResponseInterceptorHandler handler,
+  ) async {
     /*debugPrint(
         "--> onResponse Start ${response.requestOptions.method.toUpperCase()} - ${response.requestOptions.baseUrl}${response.requestOptions.path}");
 
@@ -94,14 +94,17 @@ class DioInterceptorsUtil extends QueuedInterceptorsWrapper {
 @override
 Future onError(DioException dioError, ErrorInterceptorHandler handler) async {
   debugPrint(
-      "<-- onError Start ${dioError.message} ${dioError.response?.requestOptions != null ? (dioError.response!.requestOptions.baseUrl + dioError.response!.requestOptions.path) : 'URL'}");
+    "<-- onError Start ${dioError.message} ${dioError.response?.requestOptions != null ? (dioError.response!.requestOptions.baseUrl + dioError.response!.requestOptions.path) : 'URL'}",
+  );
 
   debugPrint(
-      "${dioError.response != null ? dioError.response!.data : 'Unknown Error'}");
+    "${dioError.response != null ? dioError.response!.data : 'Unknown Error'}",
+  );
   debugPrint("<-- onError End");
 
-  final int? responseCode =
-  dioError.response != null ? dioError.response!.statusCode : 0;
+  final int? responseCode = dioError.response != null
+      ? dioError.response!.statusCode
+      : 0;
 
   debugPrint('ERRROR HANDLER $responseCode --  $dioError');
 }

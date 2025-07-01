@@ -15,9 +15,7 @@ class PresensiInOutView extends HookWidget {
     final buttonStyle = ElevatedButton.styleFrom(
       backgroundColor: Colors.blue,
       foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
 
@@ -28,8 +26,11 @@ class PresensiInOutView extends HookWidget {
     );
 
     const timeTextStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
-    const timeTextStyleDisabled =
-        TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey);
+    const timeTextStyleDisabled = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Colors.grey,
+    );
 
     return Card(
       elevation: 2.0,
@@ -63,10 +64,7 @@ class PresensiInOutView extends HookWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Divider(
-              color: Colors.grey[400],
-              thickness: 0.8,
-            ),
+            Divider(color: Colors.grey[400], thickness: 0.8),
             const SizedBox(height: 8),
             Row(
               children: <Widget>[
@@ -100,7 +98,8 @@ class PresensiInOutView extends HookWidget {
                       // TODO: Logika untuk Clock In
                       print("Clock In tapped");
                       context.pushRoute(
-                          PresensiWriteAttendanceRoute(title: 'Jam Masuk'));
+                        PresensiWriteAttendanceRoute(title: 'Jam Masuk'),
+                      );
                     },
                     style: buttonStyle,
                   ),
@@ -117,7 +116,8 @@ class PresensiInOutView extends HookWidget {
                       // TODO: Logika untuk Clock Out
                       print("Clock Out tapped");
                       context.pushRoute(
-                          PresensiWriteAttendanceRoute(title: 'Jam Pulang'));
+                        PresensiWriteAttendanceRoute(title: 'Jam Pulang'),
+                      );
                     },
                     style: buttonStyle,
                   ),

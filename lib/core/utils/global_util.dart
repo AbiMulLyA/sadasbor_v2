@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
 import '../../config/injector/injector.dart';
 import 'shared_preferences_util.dart';
-import 'dart:io';
 
 @lazySingleton
 class GlobalUtil {
@@ -17,9 +17,13 @@ class GlobalUtil {
 
     return version;
   }
+
   //* debugPrintSynchronouslyWithText
-  void debugPrintSynchronouslyWithText(String? message, String? version,
-      {int? wrapWidth}) {
+  void debugPrintSynchronouslyWithText(
+    String? message,
+    String? version, {
+    int? wrapWidth,
+  }) {
     final dateToday = DateFormat.yMd().add_Hms().format(DateTime.now());
     message = "[$dateToday]: $message";
     debugPrintSynchronously(message, wrapWidth: wrapWidth);

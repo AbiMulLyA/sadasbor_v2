@@ -1,7 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:flutter/material.dart';import '../../config/theme/theme.dart';
+import 'package:flutter/material.dart';
 
+import '../../config/theme/theme.dart';
 
 class ThemeUtil {
   static ThemeData getThemeDefaults(BuildContext context) {
@@ -22,7 +23,8 @@ class ThemeUtil {
     }*/
 
     themeData = themeLight.copyWith(
-        colorScheme: const ColorScheme.light(error: Color(0xffd32f2f)));
+      colorScheme: const ColorScheme.light(error: Color(0xffd32f2f)),
+    );
     // themeData = themeDark.copyWith(errorColor: const Color(0xffd32f2f));
 
     accurateTheme[ThemeType.defaults] = themeData;

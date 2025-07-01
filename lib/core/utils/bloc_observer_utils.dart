@@ -28,8 +28,12 @@ class BlocObserverUtils extends BlocObserver {
   void onError(BlocBase bloc, dynamic error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
     if (kDebugMode) {
-      log('Bloc error: ${bloc.runtimeType}',
-          name: 'BlocObserver', error: error, stackTrace: stackTrace);
+      log(
+        'Bloc error: ${bloc.runtimeType}',
+        name: 'BlocObserver',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 

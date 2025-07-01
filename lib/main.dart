@@ -100,8 +100,9 @@ class _AppState extends State<App> {
     /// #Region Setup ConnectionUtil
     final ConnectionUtil _connectionUtil = getIt<ConnectionUtil>();
     _connectionUtil.initialize();
-    _connectionChangeStream =
-        _connectionUtil.connectionChange.listen(_connectionUtil.connectionInfo);
+    _connectionChangeStream = _connectionUtil.connectionChange.listen(
+      _connectionUtil.connectionInfo,
+    );
 
     // #Region Setup Dio
     final dio = getIt<Dio>();
@@ -210,7 +211,8 @@ class _AppState extends State<App> {
 }
 
 @RoutePage()
-class MainPage extends HookWidget { // Diubah menjadi HookWidget
+class MainPage extends HookWidget {
+  // Diubah menjadi HookWidget
   const MainPage({super.key});
 
   @override

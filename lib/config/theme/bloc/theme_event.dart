@@ -8,9 +8,7 @@ abstract class ThemeEvent extends Equatable {
 }
 
 class SwitchEv extends ThemeEvent {
-  const SwitchEv({
-    required this.themeType,
-  });
+  const SwitchEv({required this.themeType});
 
   final ThemeType themeType;
 

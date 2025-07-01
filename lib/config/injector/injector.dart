@@ -9,6 +9,7 @@ import '../../core/utils/bloc_wrapper_util.dart';
 import '../api/kinerja/kinerja_api.dart';
 import '../router/router.dart';
 import 'injector.config.dart';
+
 final getIt = GetIt.instance;
 
 final KinerjaApi kinerjaApi = getIt<KinerjaApi>();
@@ -48,15 +49,9 @@ abstract class RegisterModule {
         "Accept-Encoding": "gzip",
         "Connection": "keep-alive",
       },
-      connectTimeout: const Duration(
-        seconds: 120,
-      ),
-      receiveTimeout: const Duration(
-        seconds: 120,
-      ),
-      sendTimeout: const Duration(
-        seconds: 120,
-      ),
+      connectTimeout: const Duration(seconds: 120),
+      receiveTimeout: const Duration(seconds: 120),
+      sendTimeout: const Duration(seconds: 120),
       followRedirects: false,
       validateStatus: (status) {
         return status! < 501;
@@ -69,7 +64,6 @@ abstract class RegisterModule {
 
   @singleton
   BlocWrapperUtil get blocWrapperUtil => BlocWrapperUtil(getIt<AppRouter>());
-
 }
 
 abstract class Env {

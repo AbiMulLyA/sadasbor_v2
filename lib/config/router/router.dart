@@ -15,12 +15,7 @@ class AppRouter extends RootStackRouter {
   AppRouter() : super(navigatorKey: routerNavigator);
   @override
   final List<AutoRoute> routes = [
-    AutoRoute(
-      page: MainRoute.page,
-      initial: true,
-    ),
-    AutoRoute(
-      page: PresensiWriteAttendanceRoute.page,
-    ),
+    AutoRoute(page: MainRoute.page, initial: true),
+    AutoRoute(page: PresensiWriteAttendanceRoute.page),
   ];
 }

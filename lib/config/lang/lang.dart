@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum LangType {
-  id,
-  en,
-  defaults,
-}
+enum LangType { id, en, defaults }
 
 final Map<LangType, Locale> sadasborLang = {
   LangType.id: const Locale('id', 'ID'),

@@ -12,7 +12,8 @@ class ConnectionUtil {
   bool hasConnection = false;
 
   // This is how we'll allow subscribing to connection changes
-  StreamController<bool> connectionChangeController = StreamController<bool>.broadcast();
+  StreamController<bool> connectionChangeController =
+      StreamController<bool>.broadcast();
 
   // flutter_connectivity
   final Connectivity _connectivity = Connectivity();

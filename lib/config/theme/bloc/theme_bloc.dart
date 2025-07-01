@@ -11,12 +11,12 @@ part 'theme_state.dart';
 @lazySingleton
 class ThemeBloc extends HydratedBloc<ThemeEvent, ThemeState> {
   ThemeBloc()
-      : super(
-    ThemeState(
-      themeType: 'ThemeType.defaults',
-      themeData: accurateTheme[ThemeType.defaults],
-    ),
-  ) {
+    : super(
+        ThemeState(
+          themeType: 'ThemeType.defaults',
+          themeData: accurateTheme[ThemeType.defaults],
+        ),
+      ) {
     on<SwitchEv>((event, emit) async {
       emit(
         ThemeState(
@@ -38,8 +38,9 @@ class ThemeBloc extends HydratedBloc<ThemeEvent, ThemeState> {
   @override
   Map<String, dynamic> toJson(ThemeState state) {
     return {
-      'themeType':
-      state.themeData != null ? _mapDataToString(state.themeData!) : null,
+      'themeType': state.themeData != null
+          ? _mapDataToString(state.themeData!)
+          : null,
     };
   }
 

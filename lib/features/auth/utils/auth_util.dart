@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../config/injector/injector.dart';
 import '../../../core/utils/shared_preferences_util.dart';
 import '../presentation/bloc/auth_bloc.dart';
@@ -11,7 +11,7 @@ class AuthUtil {
   // final SecureStorageUtil _storageUtil = getIt<SecureStorageUtil>();
   // final SettingPreferenceUtils _settingPreferenceUtils = getIt<SettingPreferenceUtils>();
   final SharedPreferencesUtil _sharedPreferencesUtil =
-  getIt<SharedPreferencesUtil>();
+      getIt<SharedPreferencesUtil>();
 
   static const String prefKeyAccurateHost = 'ACCURATE_HOST';
   static const String prefKeySeenBoard = 'AOL_SEEN_ON_BOARD';
@@ -48,8 +48,9 @@ class AuthUtil {
   }
 
   String? getAccessToken() {
-    final String? token =
-    _sharedPreferencesUtil.getString(pefKeyAolAccessToken);
+    final String? token = _sharedPreferencesUtil.getString(
+      pefKeyAolAccessToken,
+    );
     // final String? token = await _storageUtil.read(pefKeyAolAccessToken);
 
     // await Future.delayed(const Duration(seconds: 1));
@@ -57,8 +58,9 @@ class AuthUtil {
   }
 
   Future<bool> hasAccessToken() async {
-    final String? token =
-    _sharedPreferencesUtil.getString(pefKeyAolAccessToken);
+    final String? token = _sharedPreferencesUtil.getString(
+      pefKeyAolAccessToken,
+    );
     // final String? token = await _storageUtil.read(pefKeyAolAccessToken);
 
     // await Future.delayed(const Duration(seconds: 1));
@@ -83,8 +85,9 @@ class AuthUtil {
   }
 
   Future<bool> hasSeenOnBoard() async {
-    final bool hasSeenOnBoard =
-    _sharedPreferencesUtil.getBool(prefKeySeenBoard);
+    final bool hasSeenOnBoard = _sharedPreferencesUtil.getBool(
+      prefKeySeenBoard,
+    );
     await Future.delayed(const Duration(seconds: 1));
 
     return hasSeenOnBoard;
@@ -100,8 +103,9 @@ class AuthUtil {
   }
 
   Future<bool> hasSelectedDB() async {
-    final bool hasSelectedDB =
-    _sharedPreferencesUtil.getBool(prefKeySelectedDB);
+    final bool hasSelectedDB = _sharedPreferencesUtil.getBool(
+      prefKeySelectedDB,
+    );
     await Future.delayed(const Duration(seconds: 1));
 
     return hasSelectedDB;
