@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^6.2.1                           # Use Google Fonts in your Flutter app.
   easy_localization: ^3.0.7
   flutter_svg: ^2.0.10+1                            # Render SVG files in Flutter apps.
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

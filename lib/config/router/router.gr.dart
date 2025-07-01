@@ -41,3 +41,51 @@ class MainRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [PresensiWriteAttendancePage]
+class PresensiWriteAttendanceRoute
+    extends PageRouteInfo<PresensiWriteAttendanceRouteArgs> {
+  PresensiWriteAttendanceRoute({
+    Key? key,
+    required String title,
+    List<PageRouteInfo>? children,
+  }) : super(
+         PresensiWriteAttendanceRoute.name,
+         args: PresensiWriteAttendanceRouteArgs(key: key, title: title),
+         initialChildren: children,
+       );
+
+  static const String name = 'PresensiWriteAttendanceRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PresensiWriteAttendanceRouteArgs>();
+      return PresensiWriteAttendancePage(key: args.key, title: args.title);
+    },
+  );
+}
+
+class PresensiWriteAttendanceRouteArgs {
+  const PresensiWriteAttendanceRouteArgs({this.key, required this.title});
+
+  final Key? key;
+
+  final String title;
+
+  @override
+  String toString() {
+    return 'PresensiWriteAttendanceRouteArgs{key: $key, title: $title}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PresensiWriteAttendanceRouteArgs) return false;
+    return key == other.key && title == other.title;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ title.hashCode;
+}
