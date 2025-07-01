@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sadasbor_v2/features/dashboard/presentation/bloc/dashboard/dashboard_page_cubit.dart';
-import 'package:sadasbor_v2/features/dashboard/presentation/pages/account/account_page.dart';
-import 'package:sadasbor_v2/features/dashboard/presentation/pages/presensi/presensi_page.dart';
+import 'package:sadasbor_v2/features/account/presentation/pages/account_page.dart';
+import 'package:sadasbor_v2/features/presensi/presentation/pages/presensi_page.dart';
 
 import 'home/home_page.dart';
 
