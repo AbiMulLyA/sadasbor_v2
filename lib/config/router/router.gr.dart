@@ -43,47 +43,35 @@ class MainRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PresensiAllPresensiPage]
+class PresensiAllPresensiRoute extends PageRouteInfo<void> {
+  const PresensiAllPresensiRoute({List<PageRouteInfo>? children})
+    : super(PresensiAllPresensiRoute.name, initialChildren: children);
+
+  static const String name = 'PresensiAllPresensiRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PresensiAllPresensiPage();
+    },
+  );
+}
+
+/// generated route for
 /// [PresensiDetailPage]
-class PresensiDetailRoute extends PageRouteInfo<PresensiDetailRouteArgs> {
-  PresensiDetailRoute({Key? key, List<PageRouteInfo>? children})
-    : super(
-        PresensiDetailRoute.name,
-        args: PresensiDetailRouteArgs(key: key),
-        initialChildren: children,
-      );
+class PresensiDetailRoute extends PageRouteInfo<void> {
+  const PresensiDetailRoute({List<PageRouteInfo>? children})
+    : super(PresensiDetailRoute.name, initialChildren: children);
 
   static const String name = 'PresensiDetailRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<PresensiDetailRouteArgs>(
-        orElse: () => const PresensiDetailRouteArgs(),
-      );
-      return PresensiDetailPage(key: args.key);
+      return const PresensiDetailPage();
     },
   );
-}
-
-class PresensiDetailRouteArgs {
-  const PresensiDetailRouteArgs({this.key});
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'PresensiDetailRouteArgs{key: $key}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! PresensiDetailRouteArgs) return false;
-    return key == other.key;
-  }
-
-  @override
-  int get hashCode => key.hashCode;
 }
 
 /// generated route for

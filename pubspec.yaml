@@ -16,7 +16,6 @@ dependencies:
 
   analyzer: ^7.5.1                               # A versatile package for efficient code analysis in Flutter projects.
   auto_route: ^10.1.0+1                             # A Flutter routing library that generates route code.
-  cupertino_icons: ^1.0.6
   calendar_date_picker2: ^2.0.1                  # A calendar date picker widget for selecting dates.
   connectivity_plus: ^6.0.3                      # Allows you to monitor network connectivity in Flutter.
   dartz: ^0.10.1                                 # A functional programming library for Dart.
@@ -42,6 +41,9 @@ dependencies:
   easy_localization: ^3.0.7
   flutter_svg: ^2.0.10+1                            # Render SVG files in Flutter apps.
   cached_network_image: ^3.4.1
+  # Html Dependencies
+  flutter_html: ^3.0.0
+  html: ^0.15.6
 
 dev_dependencies:
   flutter_test:

@@ -114,6 +114,7 @@ class PresensiHistoryView extends HookWidget {
               InkWell(
                 onTap: () {
                   print("Lihat Semua diklik");
+                  context.pushRoute(PresensiAllPresensiRoute());
                 },
                 child: Text(
                   "Lihat Semua",

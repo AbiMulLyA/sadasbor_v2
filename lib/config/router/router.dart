@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:sadasbor_v2/features/presensi/presentation/pages/presensi_all_presensi_page.dart';
 
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/presensi/presentation/pages/presensi_detail_page.dart';
@@ -19,5 +20,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: MainRoute.page, initial: true),
     AutoRoute(page: PresensiWriteAttendanceRoute.page),
     AutoRoute(page: PresensiDetailRoute.page),
+    AutoRoute(page: PresensiAllPresensiRoute.page),
   ];
 }
