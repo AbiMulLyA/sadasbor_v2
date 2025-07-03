@@ -27,6 +27,12 @@ enum ErrorType {
   dtoParsingError,
 }
 
+const String kDatabaseName = 'app_database.db';
+const String kNoInternet = 'Tidak ada koneksi internet..';
+const String kHasInternet = 'Ok, Terhubung ke internet..';
+const String kLocalError = 'Local Error';
+const String kUnknownError = 'Unknown Error';
+const String kTimeoutError = 'Request Timeout';
 @lazySingleton
 class ErrorUtil {
   //* Error Handling Widget
@@ -97,20 +103,25 @@ class ErrorUtil {
   }
 
   //* DioException Handling Exeptions
-  Failure dioCatchError(DioException e) {
-    if (e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.receiveTimeout) {
-      return TimeoutFailure(message: e.error.toString());
-    } else if (e.type == DioExceptionType.badResponse) {
-      if (e.error!.toString().contains('Sesi login anda telah berakhir')) {
-        return const SessionFailure();
-      }
-      return BackendFailure(message: e.error.toString());
+  static Failure dioCatchError(DioError e) {
+    if (e.response != null && e.response!.data is! String) {
+      return RemoteFailure(
+        code: e.response!.data['code'] as int,
+        message: e.response!.data['message'] as String,
+        type: ErrorType.requestFailed,
+      );
     } else {
-      if (e.error!.toString().contains('SocketException')) {
-        return const NoInternetFailure();
+      if (e.type == DioErrorType.connectionTimeout) {
+        return TimeoutFailure(message: e.error.toString());
+      } else if (e.type == DioErrorType.badResponse) {
+        return RemoteFailure(
+          code: 303,
+          message: e.error.toString(),
+          type: ErrorType.responseInvalid,
+        );
+      } else {
+        return const UnknownFailure();
       }
-      return const UnknownFailure();
     }
   }
 }

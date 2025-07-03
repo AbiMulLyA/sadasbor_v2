@@ -1,14 +1,14 @@
 import 'package:injectable/injectable.dart';
+import 'package:sadasbor_v2/config/api/sadasbor_api.dart';
 
 import '../../injector/injector.dart';
-import '../sadasbor_api.dart';
 
 @Environment(Env.prod)
-@Named('prod_kinerja_api')
+@Named('prod_bkpsdm_api')
 @Injectable(as: SadasborApi)
-class ProdKinerjaApi implements SadasborApi {
+class ProdBkpsdmApi implements SadasborApi {
   @override
-  String baseUrl() => "https://kinerja.tasikmalayakab.go.id";
+  String baseUrl() => "https://bkpsdm.tasikmalayakab.go.id";
 
   @override
   String environment() => 'Production';

@@ -13,9 +13,11 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:sadasbor_v2/config/api/bkpsdm/dev_bkpsdm_api.dart' as _i995;
+import 'package:sadasbor_v2/config/api/bkpsdm/prod_bkpsdm_api.dart' as _i626;
 import 'package:sadasbor_v2/config/api/kinerja/dev_kinerja_api.dart' as _i139;
-import 'package:sadasbor_v2/config/api/kinerja/kinerja_api.dart' as _i198;
 import 'package:sadasbor_v2/config/api/kinerja/prod_kinerja_api.dart' as _i216;
+import 'package:sadasbor_v2/config/api/sadasbor_api.dart' as _i814;
 import 'package:sadasbor_v2/config/injector/injector.dart' as _i5;
 import 'package:sadasbor_v2/config/router/router.dart' as _i372;
 import 'package:sadasbor_v2/config/theme/bloc/theme_bloc.dart' as _i135;
@@ -28,6 +30,14 @@ import 'package:sadasbor_v2/core/utils/shared_preferences_util.dart' as _i180;
 import 'package:sadasbor_v2/features/auth/presentation/bloc/auth_bloc.dart'
     as _i427;
 import 'package:sadasbor_v2/features/auth/utils/auth_util.dart' as _i902;
+import 'package:sadasbor_v2/features/dashboard/data/datasources/remote/dashboard_bkpsdm_remote_data_source.dart'
+    as _i1061;
+import 'package:sadasbor_v2/features/dashboard/data/repository_impl/dashboard_repository_impl.dart'
+    as _i453;
+import 'package:sadasbor_v2/features/dashboard/domain/repositories/dashboard_repository.dart'
+    as _i436;
+import 'package:sadasbor_v2/features/dashboard/domain/usecases/posts/dashboard_posts_usecase.dart'
+    as _i220;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 const String _dev = 'dev';
@@ -48,7 +58,6 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i558.FlutterSecureStorage>(() => registerModule.storage);
-    gh.lazySingleton<_i361.Dio>(() => registerModule.dio());
     gh.lazySingleton<_i135.ThemeBloc>(() => _i135.ThemeBloc());
     gh.lazySingleton<_i494.ConnectionUtil>(() => _i494.ConnectionUtil());
     gh.lazySingleton<_i622.ErrorUtil>(() => _i622.ErrorUtil());
@@ -57,23 +66,58 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i180.SharedPreferencesUtil(),
     );
     gh.lazySingleton<_i902.AuthUtil>(() => _i902.AuthUtil());
-    gh.factory<_i198.KinerjaApi>(
+    gh.factory<_i814.SadasborApi>(
+      () => _i995.DevBkpsdmApi(),
+      instanceName: 'dev_bkpsdm_api',
+      registerFor: {_dev},
+    );
+    gh.factory<_i814.SadasborApi>(
       () => _i139.DevKinerjaApi(),
+      instanceName: 'dev_kinerja_api',
       registerFor: {_dev},
     );
     gh.lazySingleton<_i427.AuthBloc>(
       () => _i427.AuthBloc(authUtil: gh<_i902.AuthUtil>()),
     );
+    gh.factory<_i361.Dio>(
+      () => registerModule.provideSecondaryDio(
+        gh<_i814.SadasborApi>(instanceName: 'KinerjaApi'),
+      ),
+      instanceName: 'KinerjaDio',
+    );
     gh.lazySingleton<_i104.DioInterceptorsUtil>(
       () => _i104.DioInterceptorsUtil(gh<_i361.Dio>()),
     );
-    gh.factory<String>(
-      () => registerModule.kinerjaBaseUrl,
-      instanceName: 'KinerjaBaseUrl',
-    );
-    gh.factory<_i198.KinerjaApi>(
+    gh.factory<_i814.SadasborApi>(
       () => _i216.ProdKinerjaApi(),
+      instanceName: 'prod_kinerja_api',
       registerFor: {_prod},
+    );
+    gh.factory<_i361.Dio>(
+      () => registerModule.provideMainDio(
+        gh<_i814.SadasborApi>(instanceName: 'BkpsdmApi'),
+      ),
+      instanceName: 'BkpsdmDio',
+    );
+    gh.factory<_i814.SadasborApi>(
+      () => _i626.ProdBkpsdmApi(),
+      instanceName: 'prod_bkpsdm_api',
+      registerFor: {_prod},
+    );
+    gh.factory<_i1061.DashboardBkpsdmRemoteDataSource>(
+      () => _i1061.DashboardBkpsdmRemoteDataSource(
+        gh<_i361.Dio>(instanceName: 'BkpsdmDio'),
+      ),
+    );
+    gh.lazySingleton<_i436.DashboardRepository>(
+      () => _i453.DashboardRepositoryImpl(
+        connectionUtil: gh<_i494.ConnectionUtil>(),
+        dio: gh<_i361.Dio>(),
+        bkpsdmRemoteDataSource: gh<_i1061.DashboardBkpsdmRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i220.DashboardPostsUseCase>(
+      () => _i220.DashboardPostsUseCase(gh<_i436.DashboardRepository>()),
     );
     return this;
   }

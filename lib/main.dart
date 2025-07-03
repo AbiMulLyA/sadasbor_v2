@@ -13,7 +13,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import 'config/api/kinerja/kinerja_api.dart';
+import 'config/api/sadasbor_api.dart';
 import 'config/injector/injector.dart';
 import 'config/lang/lang.dart';
 import 'config/router/router.dart';
@@ -44,9 +44,9 @@ Future<void> mainApp(String env) async {
 
   debugPrint(env);
 
-  final KinerjaApi kinerjaApi = getIt<KinerjaApi>();
+  final SadasborApi sadasborApi = getIt<SadasborApi>();
 
-  debugPrint(kinerjaApi.baseUrl());
+  debugPrint(sadasborApi.baseUrl());
 
   final GlobalUtil _globalUtil = getIt<GlobalUtil>();
 
@@ -185,7 +185,7 @@ class _AppState extends State<App> {
               supportedLocales: context.supportedLocales,
               localizationsDelegates: context.localizationDelegates,
               locale: context.locale,
-              title: KinerjaApi.appName,
+              title: SadasborApi.appName,
               debugShowCheckedModeBanner: false,
               theme: accurateTheme[ThemeType.light],
               themeMode: themeMode,
