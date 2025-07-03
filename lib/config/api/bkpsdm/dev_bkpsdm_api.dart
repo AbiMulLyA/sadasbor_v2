@@ -8,7 +8,7 @@ import '../../injector/injector.dart';
 @Injectable(as: SadasborApi)
 class DevBkpsdmApi implements SadasborApi {
   @override
-  String baseUrl() => "https://bkpsdm.tasikmalayakab.go.id";
+  String baseUrl() => "https://bkpsdm.tasikmalayakab.go.id/api";
 
   @override
   String environment() => 'Development';
