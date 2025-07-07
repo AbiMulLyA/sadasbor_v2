@@ -26,10 +26,10 @@ class _DashboardBkpsdmRemoteDataSource
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<HttpResponse<PagingModel<DashboardPostsModel>>>(
-          Options(method: 'POST', headers: _headers, extra: _extra)
+          Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/accurate/api/company/alpha-update.do',
+                '/posts',
                 queryParameters: queryParameters,
                 data: _data,
               )

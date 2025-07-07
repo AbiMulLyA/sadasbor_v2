@@ -38,6 +38,10 @@ import 'package:sadasbor_v2/features/dashboard/domain/repositories/dashboard_rep
     as _i436;
 import 'package:sadasbor_v2/features/dashboard/domain/usecases/posts/dashboard_posts_usecase.dart'
     as _i220;
+import 'package:sadasbor_v2/features/dashboard/presentation/bloc/dashboard/dashboard_page_cubit.dart'
+    as _i554;
+import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts/dashboard_posts_cubit.dart'
+    as _i849;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 const String _dev = 'dev';
@@ -51,6 +55,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
+    gh.factory<_i554.DashboardPageCubit>(() => _i554.DashboardPageCubit());
     gh.singleton<_i372.AppRouter>(() => registerModule.appRouter);
     gh.singleton<_i966.BlocWrapperUtil>(() => registerModule.blocWrapperUtil);
     await gh.lazySingletonAsync<_i460.SharedPreferences>(
@@ -58,6 +63,7 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i558.FlutterSecureStorage>(() => registerModule.storage);
+    gh.lazySingleton<_i361.Dio>(() => registerModule.dio());
     gh.lazySingleton<_i135.ThemeBloc>(() => _i135.ThemeBloc());
     gh.lazySingleton<_i494.ConnectionUtil>(() => _i494.ConnectionUtil());
     gh.lazySingleton<_i622.ErrorUtil>(() => _i622.ErrorUtil());
@@ -66,32 +72,21 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i180.SharedPreferencesUtil(),
     );
     gh.lazySingleton<_i902.AuthUtil>(() => _i902.AuthUtil());
-    gh.factory<_i814.SadasborApi>(
-      () => _i995.DevBkpsdmApi(),
-      instanceName: 'dev_bkpsdm_api',
-      registerFor: {_dev},
-    );
-    gh.factory<_i814.SadasborApi>(
-      () => _i139.DevKinerjaApi(),
-      instanceName: 'dev_kinerja_api',
-      registerFor: {_dev},
-    );
     gh.lazySingleton<_i427.AuthBloc>(
       () => _i427.AuthBloc(authUtil: gh<_i902.AuthUtil>()),
-    );
-    gh.factory<_i361.Dio>(
-      () => registerModule.provideSecondaryDio(
-        gh<_i814.SadasborApi>(instanceName: 'KinerjaApi'),
-      ),
-      instanceName: 'KinerjaDio',
     );
     gh.lazySingleton<_i104.DioInterceptorsUtil>(
       () => _i104.DioInterceptorsUtil(gh<_i361.Dio>()),
     );
     gh.factory<_i814.SadasborApi>(
-      () => _i216.ProdKinerjaApi(),
-      instanceName: 'prod_kinerja_api',
-      registerFor: {_prod},
+      () => _i995.DevBkpsdmApi(),
+      instanceName: 'BkpsdmApi',
+      registerFor: {_dev},
+    );
+    gh.factory<_i814.SadasborApi>(
+      () => _i139.DevKinerjaApi(),
+      instanceName: 'KinerjaApi',
+      registerFor: {_dev},
     );
     gh.factory<_i361.Dio>(
       () => registerModule.provideMainDio(
@@ -101,8 +96,25 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i814.SadasborApi>(
       () => _i626.ProdBkpsdmApi(),
-      instanceName: 'prod_bkpsdm_api',
+      instanceName: 'BkpsdmApi',
       registerFor: {_prod},
+    );
+    gh.factory<_i814.SadasborApi>(
+      () => _i216.ProdKinerjaApi(),
+      instanceName: 'KinerjaApi',
+      registerFor: {_prod},
+    );
+    await gh.singletonAsync<_i814.SadasborApi>(
+      () => registerModule.registerDefaultApi(
+        gh<_i814.SadasborApi>(instanceName: 'KinerjaApi'),
+      ),
+      preResolve: true,
+    );
+    gh.factory<_i361.Dio>(
+      () => registerModule.provideSecondaryDio(
+        gh<_i814.SadasborApi>(instanceName: 'KinerjaApi'),
+      ),
+      instanceName: 'KinerjaDio',
     );
     gh.factory<_i1061.DashboardBkpsdmRemoteDataSource>(
       () => _i1061.DashboardBkpsdmRemoteDataSource(
@@ -118,6 +130,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i220.DashboardPostsUseCase>(
       () => _i220.DashboardPostsUseCase(gh<_i436.DashboardRepository>()),
+    );
+    gh.factory<_i849.DashboardPostsCubit>(
+      () => _i849.DashboardPostsCubit(gh<_i220.DashboardPostsUseCase>()),
     );
     return this;
   }

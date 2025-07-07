@@ -4,7 +4,7 @@ import '../../injector/injector.dart';
 import '../sadasbor_api.dart';
 
 @Environment(Env.prod)
-@Named('prod_kinerja_api')
+@Named('KinerjaApi')
 @Injectable(as: SadasborApi)
 class ProdKinerjaApi implements SadasborApi {
   @override

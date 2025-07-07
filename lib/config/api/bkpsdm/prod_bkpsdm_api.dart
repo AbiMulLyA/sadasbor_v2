@@ -4,7 +4,7 @@ import 'package:sadasbor_v2/config/api/sadasbor_api.dart';
 import '../../injector/injector.dart';
 
 @Environment(Env.prod)
-@Named('prod_bkpsdm_api')
+@Named('BkpsdmApi')
 @Injectable(as: SadasborApi)
 class ProdBkpsdmApi implements SadasborApi {
   @override

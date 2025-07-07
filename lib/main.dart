@@ -44,9 +44,9 @@ Future<void> mainApp(String env) async {
 
   debugPrint(env);
 
-  final SadasborApi sadasborApi = getIt<SadasborApi>();
-
-  debugPrint(sadasborApi.baseUrl());
+  // final SadasborApi sadasborApi = getIt<SadasborApi>();
+  //
+  // debugPrint(sadasborApi.baseUrl());
 
   final GlobalUtil _globalUtil = getIt<GlobalUtil>();
 

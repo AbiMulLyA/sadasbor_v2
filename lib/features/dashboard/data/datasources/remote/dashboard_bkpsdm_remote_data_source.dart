@@ -16,6 +16,6 @@ abstract class DashboardBkpsdmRemoteDataSource {
      @Named('BkpsdmDio') Dio dio,
       ) = _DashboardBkpsdmRemoteDataSource;
 
-  @POST('/posts')
+  @GET('/posts')
   Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts();
 }

@@ -6,6 +6,8 @@ import 'package:sadasbor_v2/features/dashboard/presentation/bloc/dashboard/dashb
 import 'package:sadasbor_v2/features/account/presentation/pages/account_page.dart';
 import 'package:sadasbor_v2/features/presensi/presentation/pages/presensi_page.dart';
 
+import '../../../../config/injector/injector.dart';
+import '../bloc/posts/dashboard_posts_cubit.dart';
 import 'home/home_page.dart';
 
 @RoutePage()
@@ -14,8 +16,16 @@ class DashboardPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => DashboardPageCubit(),
+    return MultiBlocProvider( // <--- GUNAKAN MultiBlocProvider
+      providers: [
+        BlocProvider(
+          create: (_) => getIt<DashboardPageCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<DashboardPostsCubit>(),
+        ),
+
+      ],
       child: const DashboardPageView(),
     );
   }

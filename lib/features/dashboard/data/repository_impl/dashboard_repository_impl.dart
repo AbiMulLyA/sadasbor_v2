@@ -7,14 +7,12 @@ import 'package:injectable/injectable.dart';
 import 'package:sadasbor_v2/core/usecases/usecase.dart';
 import 'package:sadasbor_v2/features/dashboard/data/datasources/remote/dashboard_bkpsdm_remote_data_source.dart';
 import 'package:sadasbor_v2/features/dashboard/data/models/posts/dashboard_posts_model.dart';
-import 'package:sadasbor_v2/features/dashboard/domain/entities/posts/dashboard_posts_entity.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/models/paging/paging_model.dart';
 import '../../../../core/utils/connection_util.dart';
 import '../../../../core/utils/error_util.dart';
 import '../../domain/repositories/dashboard_repository.dart';
-
 
 @LazySingleton(as: DashboardRepository)
 class DashboardRepositoryImpl implements DashboardRepository {
@@ -29,14 +27,15 @@ class DashboardRepositoryImpl implements DashboardRepository {
   });
 
   @override
-  Future<Either<Failure, PagingModel<DashboardPostsModel>>> getPosts(NoParam param) async {
+  Future<Either<Failure, PagingModel<DashboardPostsModel>>> getPosts(
+    NoParam param,
+  ) async {
     if (await connectionUtil.checkConnection()) {
       debugPrint('$runtimeType.profile: 1');
       try {
-        dio.options.headers.addAll({"requiresToken": true});
 
         final httpResponse = await bkpsdmRemoteDataSource.getPosts();
-        debugPrint("$runtimeType :$httpResponse");
+        debugPrint("$runtimeType :${httpResponse.response}");
 
         if (httpResponse.response.statusCode == HttpStatus.ok) {
           return Right(httpResponse.data);
@@ -50,16 +49,19 @@ class DashboardRepositoryImpl implements DashboardRepository {
             type: ErrorType.responseInvalid,
           ),
         );
-      } on DioException catch (e) {
-        debugPrint(
-            '$runtimeType.profile: 3 - DioError ${e.message} ${e.type} ${e.error}');
+      } on DioException catch (error, stackTrace) {
+        debugPrint('$runtimeType: $error');
+        debugPrint('$runtimeType: $stackTrace');
 
-        return left(ErrorUtil.dioCatchError(e));
+        return left(ErrorUtil.dioCatchError(error));
+      } catch (error, stackTrace) {
+        debugPrint('$runtimeType: $error');
+        debugPrint('$runtimeType: $stackTrace');
+        return left(LocalFailure());
       }
     } else {
       debugPrint('$runtimeType.profile: 4 - NoInternetFailure');
       return const Left(NoInternetFailure());
     }
   }
-  
 }

@@ -12,7 +12,7 @@ import 'injector.config.dart';
 
 final getIt = GetIt.instance;
 
-final SadasborApi sadasborApi = getIt<SadasborApi>();
+// final SadasborApi sadasborApi = getIt<SadasborApi>();
 
 //* Initial Getit
 // @InjectableInit(
@@ -41,24 +41,48 @@ abstract class RegisterModule {
   // @Named("KinerjaBaseUrl")
   // String get kinerjaBaseUrl => sadasborApi.baseUrl();
 
-  // @lazySingleton
-  // Dio dio() => Dio(
-  //   BaseOptions(
-  //     headers: {
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //       "Accept-Encoding": "gzip",
-  //       "Connection": "keep-alive",
-  //     },
-  //     connectTimeout: const Duration(seconds: 120),
-  //     receiveTimeout: const Duration(seconds: 120),
-  //     sendTimeout: const Duration(seconds: 120),
-  //     followRedirects: false,
-  //     validateStatus: (status) {
-  //       return status! < 501;
-  //     },
-  //   ),
-  // );
+  @lazySingleton
+  Dio dio() => Dio(
+    BaseOptions(
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept-Encoding": "gzip",
+        "Connection": "keep-alive",
+      },
+      connectTimeout: const Duration(seconds: 120),
+      receiveTimeout: const Duration(seconds: 120),
+      sendTimeout: const Duration(seconds: 120),
+      followRedirects: false,
+      validateStatus: (status) {
+        return status! < 501;
+      },
+    ),
+  );
 
+  // Metode untuk menyediakan SadasborApi default
+  // Ini akan dipanggil oleh injectable jika tidak ada cara lain untuk membuat SadasborApi default
+  // DAN jika SadasborApi default dibutuhkan (seperti oleh getIt<SadasborApi>() Anda).
+  @preResolve // Jika perlu async, jika tidak, bisa @lazySingleton atau @Injectable
+  @singleton // Atau @lazySingleton atau @Injectable sesuai kebutuhan lifecycle
+  Future<SadasborApi> registerDefaultApi(
+      // Inject salah satu API bernama yang sudah terdaftar oleh injectable
+      // Pilih mana yang mau jadi default. Misalnya, KinerjaApi.
+      @Named('KinerjaApi') SadasborApi kinerjaApi,
+      // Anda bisa juga inject environment jika perlu logika berbeda
+      // EnvironmentFilter environmentFilter, // Ini injectable punya, atau String environment
+      ) async {
+    // Logika untuk menentukan default API bisa di sini jika lebih kompleks.
+    // Untuk kasus sederhana, kita hanya mengembalikan salah satu yang sudah ada.
+    // Misalnya, kita putuskan KinerjaApi adalah default.
+    return kinerjaApi;
+    // Jika Anda perlu instance BARU yang khusus default:
+    // final currentEnv = getIt<String>(instanceName: 'activeEnvironment'); // Anda perlu mendaftarkan ini
+    // if (currentEnv == Env.dev) {
+    //   return DevKinerjaApi(); // Ini akan membuat instance baru, bukan yang di-cache oleh @Named
+    // } else {
+    //   return ProdKinerjaApi();
+    // }
+  }
   @Named('BkpsdmDio')
   @injectable
   Dio provideMainDio(@Named('BkpsdmApi') SadasborApi api) {
