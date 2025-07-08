@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sadasbor_v2/core/usecases/usecase.dart';
 import 'package:sadasbor_v2/features/dashboard/data/models/posts/dashboard_posts_model.dart';
 import 'package:sadasbor_v2/features/dashboard/domain/entities/posts/dashboard_posts_entity.dart';
 import 'package:sadasbor_v2/features/dashboard/domain/usecases/posts/dashboard_posts_usecase.dart';
@@ -17,101 +15,27 @@ class DashboardPostsCubit extends Cubit<DashboardPostsState> {
   DashboardPostsCubit(this.dashboardPostsUseCase) : super(_Initial());
 
   final DashboardPostsUseCase dashboardPostsUseCase;
-
-  Future<void> getPosts({
-    required int pageKey,
-    required PagingState<int, DashboardPostsEntity>
-    currentState, // Ganti PagingController dengan PagingState
-    required Function(PagingState<int, DashboardPostsEntity>)
-    updateState, // Callback untuk update state
-    bool retryData = true,
-    String? keywords,
-  }) async {
-    emit(_Loading());
-
-    final result = await dashboardPostsUseCase(NoParam());
-
-    return result.fold(
-      (l) {
-        emit(_Failed(failure: l));
-        // Update state dengan error
-        updateState(currentState.copyWith(error: l, isLoading: false));
-      },
-      (r) {
-        final List<DashboardPostsEntity> data = r.data.toDomainList();
-        // final isLastPage = r.length < r.pagination!.pageSize;
-            final isLastPage = r.pagination?.currentPage == r.pagination?.lastPage;
-        // Update menggunakan copyWith method
-        if (isLastPage) {
-          updateState(
-            currentState.copyWith(
-              pages: [...?currentState.pages, data],
-              // Tambahkan page baru
-              keys: [...?currentState.keys, pageKey],
-              // Tambahkan key baru
-              hasNextPage: false,
-              // Tandai sebagai halaman terakhir
-              isLoading: false,
-              error: null,
-            ),
-          );
-        } else {
-          updateState(
-            currentState.copyWith(
-              pages: [...?currentState.pages, data],
-              // Tambahkan page baru
-              keys: [...?currentState.keys, pageKey],
-              // Tambahkan key baru
-              hasNextPage: true,
-              // Masih ada halaman selanjutnya
-              isLoading: false,
-              error: null,
-            ),
-          );
-        }
-
-        // if (retryData) {
-        //   listData = r.data;
-        // } else {
-        //   listData.addAll(r.data);
-        // }
-
-        emit(_Success(data: data));
-      },
-    );
-  }
-  // Method khusus untuk PagingController - return data langsung dengan last page detection
   Future<List<DashboardPostsEntity>> fetchPostsForPagination({
     required int pageKey,
     String? keywords,
   }) async {
-    final result = await dashboardPostsUseCase(
-      NoParam()
-    );
+    final result = await dashboardPostsUseCase(pageKey);
 
     return result.fold(
           (failure) => throw Exception('Failed to fetch posts: $failure'),
           (response) {
-        // response harus bertipe DashboardPostsResponse dengan meta
         final data = response.data.toDomainList();
-        final meta =response.pagination;
+        final meta = response.pagination;
 
-        // Optional: Emit state untuk keperluan UI lain
-        emit(_Success(data: data, ));
+        // Emit state untuk keperluan UI lain
+        emit(_Success(data: data));
 
-        // CRITICAL: Last page detection untuk PagingController
-        if (meta!.currentPage == meta.lastPage) {
-          // Jika ini adalah request pertama (page 1) dan sekaligus last page
-          if (pageKey == 1) {
-            return data; // Return data (bisa kosong atau ada data)
-          }
-          // Jika ini bukan request pertama dan sudah last page
-          // Return empty list untuk signal PagingController bahwa tidak ada data lagi
-          return <DashboardPostsEntity>[];
-        }
-
-        // Jika masih ada next page, return data normal
+        // Selalu return data yang ada dari API
         return data;
+
+        // PagingController akan detect last page melalui getNextPageKey:
+        // - Jika currentPage >= lastPage, getNextPageKey return null
+        // - Atau jika data.length < pageSize (10), otomatis last page
       },
     );
   }

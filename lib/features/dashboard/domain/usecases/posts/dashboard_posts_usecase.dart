@@ -11,14 +11,14 @@ import '../../repositories/dashboard_repository.dart';
 
 @lazySingleton
 class DashboardPostsUseCase
-    implements UseCase<PagingModel<DashboardPostsModel>, NoParam> {
+    implements UseCase<PagingModel<DashboardPostsModel>, int> {
   DashboardPostsUseCase(this.repository);
 
   final DashboardRepository repository;
 
   @override
   Future<Either<Failure, PagingModel<DashboardPostsModel>>> call(
-      NoParam param) async {
-    return repository.getPosts(param);
+      int page) async {
+    return repository.getPosts(page);
   }
 }

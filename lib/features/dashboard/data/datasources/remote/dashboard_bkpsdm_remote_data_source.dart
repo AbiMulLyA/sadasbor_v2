@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -17,5 +18,7 @@ abstract class DashboardBkpsdmRemoteDataSource {
       ) = _DashboardBkpsdmRemoteDataSource;
 
   @GET('/posts')
-  Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts();
+  Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts(
+      @Query('page') int page
+      );
 }

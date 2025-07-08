@@ -28,13 +28,13 @@ class DashboardRepositoryImpl implements DashboardRepository {
 
   @override
   Future<Either<Failure, PagingModel<DashboardPostsModel>>> getPosts(
-    NoParam param,
+    int page,
   ) async {
     if (await connectionUtil.checkConnection()) {
       debugPrint('$runtimeType.profile: 1');
       try {
 
-        final httpResponse = await bkpsdmRemoteDataSource.getPosts();
+        final httpResponse = await bkpsdmRemoteDataSource.getPosts(page);
         debugPrint("$runtimeType :${httpResponse.response}");
 
         if (httpResponse.response.statusCode == HttpStatus.ok) {

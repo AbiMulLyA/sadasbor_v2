@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sadasbor_v2/core/components/refresher/pull_refresh_component.dart';
+import 'package:sadasbor_v2/core/utils/date_time_util.dart';
 import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts/dashboard_posts_cubit.dart';
 import '../../../domain/entities/posts/dashboard_posts_entity.dart';
 
@@ -105,7 +106,6 @@ class HomePage extends HookWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -181,7 +181,7 @@ class HomePage extends HookWidget {
                         padding: EdgeInsets.all(16),
                         child: Center(
                           child: Text(
-                            'No more posts',
+                            'Tidak ada lagi Artikel',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ),
@@ -202,6 +202,7 @@ class HomePage extends HookWidget {
       onTap: (){},
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -213,23 +214,19 @@ class HomePage extends HookWidget {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            // Image Section
+            // Image Section - Di sebelah kiri
             ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
+              borderRadius: BorderRadius.circular(8),
               child: CachedNetworkImage(
                 imageUrl: item.featureImage ?? '',
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.scaleDown,
+                height: 100,
+                width: 80,
+                fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
-                  height: 150,
-                  width: double.infinity,
+                  height: 100,
+                  width: 80,
                   color: Colors.grey[200],
                   child: const Center(
                     child: CircularProgressIndicator(
@@ -239,34 +236,22 @@ class HomePage extends HookWidget {
                   ),
                 ),
                 errorWidget: (context, url, error) => Container(
-                  height: 150,
-                  width: double.infinity,
+                  height: 100,
+                  width: 80,
                   color: Colors.grey[200],
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.broken_image,
-                        size: 48,
-                        color: Colors.grey[400],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Failed to load image',
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                  child: Icon(
+                    Icons.broken_image,
+                    size: 32,
+                    color: Colors.grey[400],
                   ),
                 ),
               ),
             ),
-      
-            // Content Section
-            Padding(
-              padding: const EdgeInsets.all(16),
+
+            const SizedBox(width: 16),
+
+            // Content Section - Di sebelah kanan
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -280,7 +265,7 @@ class HomePage extends HookWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        item.postDate ?? '',
+                        IndonesianDateTimeUtil.formatPostDate(item.postDate ?? ''),
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 12,
@@ -288,25 +273,26 @@ class HomePage extends HookWidget {
                       ),
                     ],
                   ),
-      
+
                   const SizedBox(height: 8),
-      
+
                   // Title Section
                   Text(
                     item.postTitle ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontSize: 14,
                       color: Colors.black87,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-      
-                  const SizedBox(height: 12),
-      
+
+                  const SizedBox(height: 8),
+
                   // Category and Author Section
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Category
                       Container(
@@ -326,37 +312,31 @@ class HomePage extends HookWidget {
                           item.categories?[0] ?? '',
                           style: TextStyle(
                             color: Colors.blue[700],
-                            fontSize: 12,
+                            fontSize: 10,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-      
-                      const SizedBox(width: 12),
-      
+
                       // Author
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person,
-                              size: 16,
-                              color: Colors.blueAccent,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.person,
+                            size: 14,
+                            color: Colors.blueAccent,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            item.authorName ?? '',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
                             ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                item.authorName ?? '',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -368,7 +348,6 @@ class HomePage extends HookWidget {
       ),
     );
   }
-
   Widget _buildErrorIndicator({
     required String message,
     required VoidCallback onRetry,

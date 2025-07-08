@@ -19,9 +19,11 @@ class _DashboardBkpsdmRemoteDataSource
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts() async {
+  Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts(
+    int page,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'page': page};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
