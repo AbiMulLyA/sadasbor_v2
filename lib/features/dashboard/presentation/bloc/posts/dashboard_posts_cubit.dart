@@ -80,4 +80,39 @@ class DashboardPostsCubit extends Cubit<DashboardPostsState> {
       },
     );
   }
+  // Method khusus untuk PagingController - return data langsung dengan last page detection
+  Future<List<DashboardPostsEntity>> fetchPostsForPagination({
+    required int pageKey,
+    String? keywords,
+  }) async {
+    final result = await dashboardPostsUseCase(
+      NoParam()
+    );
+
+    return result.fold(
+          (failure) => throw Exception('Failed to fetch posts: $failure'),
+          (response) {
+        // response harus bertipe DashboardPostsResponse dengan meta
+        final data = response.data.toDomainList();
+        final meta =response.pagination;
+
+        // Optional: Emit state untuk keperluan UI lain
+        emit(_Success(data: data, ));
+
+        // CRITICAL: Last page detection untuk PagingController
+        if (meta!.currentPage == meta.lastPage) {
+          // Jika ini adalah request pertama (page 1) dan sekaligus last page
+          if (pageKey == 1) {
+            return data; // Return data (bisa kosong atau ada data)
+          }
+          // Jika ini bukan request pertama dan sudah last page
+          // Return empty list untuk signal PagingController bahwa tidak ada data lagi
+          return <DashboardPostsEntity>[];
+        }
+
+        // Jika masih ada next page, return data normal
+        return data;
+      },
+    );
+  }
 }
