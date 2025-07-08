@@ -1,94 +1,402 @@
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sadasbor_v2/core/components/refresher/pull_refresh_component.dart';
 import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts/dashboard_posts_cubit.dart';
-
 import '../../../domain/entities/posts/dashboard_posts_entity.dart';
 
 class HomePage extends HookWidget {
   const HomePage({super.key});
 
+  // Method untuk fetch data - dipindahkan ke level class
+  Future<List<DashboardPostsEntity>> _fetchPage(
+      BuildContext context,
+      int pageKey
+      ) async {
+    try {
+      final cubit = context.read<DashboardPostsCubit>();
+
+      // UI layer hanya call cubit method, tidak langsung ke usecase
+      return await cubit.fetchPostsForPagination(
+        pageKey: pageKey,
+        keywords: null, // Bisa ditambahkan search functionality nanti
+      );
+    } catch (error) {
+      throw Exception('Failed to fetch posts: $error');
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
-    // 1. Use useState to store the controller
-    final pagingController =
-        useState<PagingController<int, DashboardPostsEntity>?>(null);
+    final scrollControllerParent = useScrollController();
+    final refreshController = useMemoized(
+          () => RefreshController(initialRefresh: false),
+    );
 
-    // 2. Define _fetchPage function
-    Future<List<DashboardPostsEntity>> _fetchPage(int pageKey) async {
-      try {
-        final controller = pagingController.value;
-        if (controller == null) {
-          throw Exception('Controller not initialized');
-        }
+    // Inisialisasi PagingController dengan proper setup
+    final pagingController = useMemoized(
+          () => PagingController<int, DashboardPostsEntity>(
+        getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : (state.keys?.last ?? 0) + 1,
+        fetchPage: (pageKey) => _fetchPage(context, pageKey),
+      ),
+      [],
+    );
 
-        // Call cubit method with currentState and updateState callback
-        await context.read<DashboardPostsCubit>().getPosts(
-          pageKey: pageKey,
-          currentState: controller.value,
-          // Pass current state
-          updateState: (newState) {
-            // Update controller state using the new v5 approach
-            controller.value = newState;
-          },
-          retryData: pageKey == 1,
-          // First page or retry
-          keywords: null, // Add search functionality later if needed
-        );
-
-        // Extract items from the updated state
-        final updatedState = controller.value;
-        if (updatedState.pages != null && updatedState.pages!.isNotEmpty) {
-          return updatedState.pages!.last;
-        } else {
-          return [];
-        }
-      } catch (error) {
-        // Throw error to be handled by PagingController
-        throw Exception('Failed to fetch posts: $error');
-      }
+    // Handle pull-to-refresh
+    Future<void> _onRefresh() async {
+      pagingController.refresh();
+      refreshController.refreshCompleted();
     }
 
-    // 3. Initialize controller in useEffect
+    // Cleanup PagingController
     useEffect(() {
-      pagingController.value = PagingController<int, DashboardPostsEntity>(
-        getNextPageKey: (state) =>
-            state.lastPageIsEmpty ? null : (state.keys?.last ?? 0) + 1,
-        fetchPage: (pageKey) => _fetchPage(1),
-      );
+      return () => pagingController.dispose();
+    }, []);
 
-      return () {
-        // Cleanup: dispose controller when widget is disposed
-        pagingController.value?.dispose();
-      };
-    },const []); // Empty dependency array
-
-    // 4. Listen to cubit state changes for error handling
     return BlocListener<DashboardPostsCubit, DashboardPostsState>(
       listener: (context, state) {
-        // state.when(
-        //   initial: () {},
-        //   loading: () {},
-        //   success: (data) {
-        //     // Success is handled in the fetchPage method
-        //   },
-        //   failed: (failure) {
-        //     // Handle error - this will be caught by the PagingController
-        //     // You can also show additional error UI here if needed
-        //   },
-        // );
+        // Optional: Handle state changes if needed
+        // Misalnya untuk show snackbar error, dll
       },
-      child: PagingListener<int, DashboardPostsEntity>(
-        controller: pagingController.value!,
-        builder: (context, state, fetchNextPage) =>
-            PagedListView<int, DashboardPostsEntity>(
-              state: state,
-              fetchNextPage: fetchNextPage,
-              builderDelegate: PagedChildBuilderDelegate(
-                itemBuilder: (context, item, index) => Container(),
+      child: Scrollbar(
+        controller: scrollControllerParent,
+        child: PullRefreshComponent(
+          controller: refreshController,
+          onRefresh: _onRefresh,
+          child: CustomScrollView(
+            controller: scrollControllerParent,
+            slivers: [
+              // Header section - sesuai requirement Anda
+              SliverToBoxAdapter(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Text(
+                            "Artikel",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              print("Lihat Semua diklik");
+                              // context.pushRoute(PresensiAllPresensiRoute());
+                            },
+                            child: Text(
+                              "Lihat Semua",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
               ),
-            ), // Your UI will go here
+
+
+              // Posts pagination section menggunakan infinite_scroll_pagination
+              PagingListener<int, DashboardPostsEntity>(
+                controller: pagingController,
+                builder: (context, state, fetchNextPage) {
+                  return PagedSliverList<int, DashboardPostsEntity>(
+                    state: state,
+                    fetchNextPage: fetchNextPage,
+                    builderDelegate: PagedChildBuilderDelegate<DashboardPostsEntity>(
+                      itemBuilder: (context, item, index) => _buildPostItem(item, index),
+
+                      // Error indicator untuk first page
+                      firstPageErrorIndicatorBuilder: (context) => _buildErrorIndicator(
+                        message: 'Failed to load posts',
+                        onRetry: () => pagingController.refresh(),
+                      ),
+
+                      // Error indicator untuk next pages
+                      newPageErrorIndicatorBuilder: (context) => _buildErrorIndicator(
+                        message: 'Failed to load more posts',
+                        onRetry: () => {},
+                      ),
+
+                      // Loading indicator untuk first page
+                      firstPageProgressIndicatorBuilder: (context) =>
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+
+                      // Loading indicator untuk next pages
+                      newPageProgressIndicatorBuilder: (context) =>
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+
+                      // No items indicator
+                      noItemsFoundIndicatorBuilder: (context) =>
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.inbox_outlined,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'No posts found',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // No more items indicator (optional)
+                      noMoreItemsIndicatorBuilder: (context) =>
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(
+                          child: Text(
+                            'No more posts',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPostItem(DashboardPostsEntity item, int index) {
+    return InkWell(
+      onTap: (){},
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image Section
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: item.featureImage ?? '',
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.scaleDown,
+                placeholder: (context, url) => Container(
+                  height: 150,
+                  width: double.infinity,
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 150,
+                  width: double.infinity,
+                  color: Colors.grey[200],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.broken_image,
+                        size: 48,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Failed to load image',
+                        style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+      
+            // Content Section
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Time Section
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: Colors.grey[600],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        item.postDate ?? '',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+      
+                  const SizedBox(height: 8),
+      
+                  // Title Section
+                  Text(
+                    item.postTitle ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      color: Colors.black87,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+      
+                  const SizedBox(height: 12),
+      
+                  // Category and Author Section
+                  Row(
+                    children: [
+                      // Category
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.blue[200]!,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          item.categories?[0] ?? '',
+                          style: TextStyle(
+                            color: Colors.blue[700],
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+      
+                      const SizedBox(width: 12),
+      
+                      // Author
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.person,
+                              size: 16,
+                              color: Colors.blueAccent,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                item.authorName ?? '',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorIndicator({
+    required String message,
+    required VoidCallback onRetry,
+  }) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 48,
+              color: Colors.red,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: onRetry,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
       ),
     );
   }
