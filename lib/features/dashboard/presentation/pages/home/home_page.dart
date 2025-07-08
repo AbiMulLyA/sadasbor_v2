@@ -1,10 +1,10 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sadasbor_v2/core/components/refresher/pull_refresh_component.dart';
 import 'package:sadasbor_v2/core/utils/date_time_util.dart';
 import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts/dashboard_posts_cubit.dart';
@@ -30,7 +30,7 @@ class HomePage extends HookWidget {
       throw Exception('Failed to fetch posts: $error');
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final scrollControllerParent = useScrollController();
@@ -111,7 +111,6 @@ class HomePage extends HookWidget {
                 ),
               ),
 
-
               // Posts pagination section menggunakan infinite_scroll_pagination
               PagingListener<int, DashboardPostsEntity>(
                 controller: pagingController,
@@ -134,14 +133,9 @@ class HomePage extends HookWidget {
                         onRetry: () => {},
                       ),
 
-                      // Loading indicator untuk first page
+                      // Loading indicator untuk first page dengan shimmer
                       firstPageProgressIndicatorBuilder: (context) =>
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
+                          _buildShimmerLoading(context),
 
                       // Loading indicator untuk next pages
                       newPageProgressIndicatorBuilder: (context) =>
@@ -192,6 +186,148 @@ class HomePage extends HookWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  // Widget shimmer loading untuk first page
+  Widget _buildShimmerLoading(BuildContext context) {
+    return Column(
+      children: List.generate(
+        5, // Jumlah shimmer items
+            (index) => _buildShimmerPostItem(context),
+      ),
+    );
+  }
+
+  // Widget shimmer untuk single post item
+  Widget _buildShimmerPostItem(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Row(
+          children: [
+            // Image shimmer - Di sebelah kiri
+            Container(
+              height: 100,
+              width: 80,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+
+            const SizedBox(width: 16),
+
+            // Content shimmer - Di sebelah kanan
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Time shimmer
+                  Row(
+                    children: [
+                      Container(
+                        height: 16,
+                        width: 16,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Container(
+                        height: 12,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Title shimmer - 2 lines
+                  Container(
+                    height: 14,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    height: 14,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Category and Author shimmer
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Category shimmer
+                      Container(
+                        height: 20,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+
+                      // Author shimmer
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: 14,
+                            width: 14,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Container(
+                            height: 10,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -348,6 +484,7 @@ class HomePage extends HookWidget {
       ),
     );
   }
+
   Widget _buildErrorIndicator({
     required String message,
     required VoidCallback onRetry,
