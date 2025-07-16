@@ -4,9 +4,10 @@ import 'package:sadasbor_v2/features/dashboard/domain/entities/posts/dashboard_p
 import '../../../../core/error/failures.dart';
 import '../../../../core/models/paging/paging_model.dart';
 import '../../data/models/posts/dashboard_posts_model.dart';
+import '../usecases/posts/dashboard_posts_param.dart';
 
 
 abstract class DashboardRepository {
-  Future<Either<Failure, PagingModel<DashboardPostsModel>>> getPosts(int page);
+  Future<Either<Failure, PagingModel<DashboardPostsModel>>> getPosts(DashboardPostsParam param);
 
 }

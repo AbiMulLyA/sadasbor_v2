@@ -1,4 +1,8 @@
 {
   "global_internal_mistake": "Kesalahan pada Internal",
-  "global_suffer_internal_error": "Mohon maaf kami mengalami kesalahan internal aplikasi"
+  "global_suffer_internal_error": "Mohon maaf kami mengalami kesalahan internal aplikasi",
+  "global_good_morning": "Selamat Pagi",
+  "global_good_afternoon": "Selamat Siang",
+  "global_good_afternoon2": "Selamat Sore",
+  "global_good_evening": "Selamat Malam"
 }

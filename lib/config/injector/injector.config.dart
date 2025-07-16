@@ -42,6 +42,8 @@ import 'package:sadasbor_v2/features/dashboard/presentation/bloc/dashboard/dashb
     as _i554;
 import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts/dashboard_posts_cubit.dart'
     as _i849;
+import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts_annoucement/dashboard_posts_annoucement_cubit.dart'
+    as _i345;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 const String _dev = 'dev';
@@ -133,6 +135,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i849.DashboardPostsCubit>(
       () => _i849.DashboardPostsCubit(gh<_i220.DashboardPostsUseCase>()),
+    );
+    gh.factory<_i345.DashboardPostsAnnouncementCubit>(
+      () => _i345.DashboardPostsAnnouncementCubit(
+        gh<_i220.DashboardPostsUseCase>(),
+      ),
     );
     return this;
   }

@@ -1,519 +1,285 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide CardTheme;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:sadasbor_v2/config/theme/theme.dart';
 import 'package:sadasbor_v2/core/components/refresher/pull_refresh_component.dart';
-import 'package:sadasbor_v2/core/utils/date_time_util.dart';
+import 'package:sadasbor_v2/core/utils/global_util.dart';
+import 'package:sadasbor_v2/features/dashboard/domain/entities/posts/dashboard_posts_entity.dart';
 import 'package:sadasbor_v2/features/dashboard/presentation/bloc/posts/dashboard_posts_cubit.dart';
-import '../../../domain/entities/posts/dashboard_posts_entity.dart';
+import 'package:sadasbor_v2/features/dashboard/presentation/pages/home/home_annoucement_slider_view.dart';
+import 'package:sadasbor_v2/features/dashboard/presentation/pages/home/home_article_error_indicator_view.dart';
+import 'package:sadasbor_v2/features/dashboard/presentation/pages/home/home_article_item_view.dart';
+import 'package:sadasbor_v2/features/dashboard/presentation/pages/home/home_article_shimmer_view.dart';
+
+import '../../bloc/posts_annoucement/dashboard_posts_annoucement_cubit.dart';
+import '../../components/grid_menu_icon_component.dart';
+import 'home_annoucement_slider_shimmer_view.dart';
+
 
 class HomePage extends HookWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
-  // Method untuk fetch data - dipindahkan ke level class
   Future<List<DashboardPostsEntity>> _fetchPage(
-      BuildContext context,
-      int pageKey
-      ) async {
-    try {
-      final cubit = context.read<DashboardPostsCubit>();
-
-      // UI layer hanya call cubit method, tidak langsung ke usecase
-      return await cubit.fetchPostsForPagination(
-        pageKey: pageKey,
-        keywords: null, // Bisa ditambahkan search functionality nanti
-      );
-    } catch (error) {
-      throw Exception('Failed to fetch posts: $error');
-    }
+    BuildContext context,
+    int pageKey,
+  ) async {
+    final cubit = context.read<DashboardPostsCubit>();
+    return cubit.fetchPostsForPagination(pageKey: pageKey);
   }
 
   @override
   Widget build(BuildContext context) {
-    final scrollControllerParent = useScrollController();
-    final refreshController = useMemoized(
-          () => RefreshController(initialRefresh: false),
-    );
+    final scrollController = useScrollController();
+    final refreshController = useMemoized(() => RefreshController());
+    final greeting = GlobalUtil.greatingText(context);
+    final cardTheme = GlobalUtil.getCardTheme();
 
-    // Inisialisasi PagingController dengan proper setup
     final pagingController = useMemoized(
-          () => PagingController<int, DashboardPostsEntity>(
+      () => PagingController<int, DashboardPostsEntity>(
         getNextPageKey: (state) =>
-        state.lastPageIsEmpty ? null : (state.keys?.last ?? 0) + 1,
+            state.lastPageIsEmpty ? null : (state.keys?.last ?? 0) + 1,
         fetchPage: (pageKey) => _fetchPage(context, pageKey),
       ),
-      [],
     );
 
-    // Handle pull-to-refresh
-    Future<void> _onRefresh() async {
+    useEffect(() {
+      context.read<DashboardPostsAnnouncementCubit>().fetchPostsAnnoucement();
+      return pagingController.dispose;
+    }, []);
+
+    Future<void> onRefresh() async {
+      context.read<DashboardPostsAnnouncementCubit>().fetchPostsAnnoucement();
       pagingController.refresh();
       refreshController.refreshCompleted();
     }
 
-    // Cleanup PagingController
-    useEffect(() {
-      return () => pagingController.dispose();
-    }, []);
+    final menuItems = <GridMenuItem>[
+      GridMenuItem(
+        icon: Icons.calendar_today,
+        label: 'Presensi',
+        onTap: _onPresensiTap,
+      ),
+      GridMenuItem(icon: Icons.receipt_long, label: 'LTH', onTap: _onLthTap),
+      GridMenuItem(icon: Icons.upcoming, label: 'KGB', isDisabled: true),
+      GridMenuItem(icon: Icons.upcoming, label: 'Cuti', isDisabled: true),
+      /*      GridMenuItem(icon: Icons.calendar_today, label: 'Presensi', onTap: _onPresensiTap),
+      GridMenuItem(icon: Icons.receipt_long, label: 'LTH', onTap: _onLthTap),
+      GridMenuItem(icon: Icons.upcoming, label: 'KGB', isDisabled: true),*/
+    ];
 
-    return BlocListener<DashboardPostsCubit, DashboardPostsState>(
-      listener: (context, state) {
-        // Optional: Handle state changes if needed
-        // Misalnya untuk show snackbar error, dll
-      },
-      child: Scrollbar(
-        controller: scrollControllerParent,
-        child: PullRefreshComponent(
-          controller: refreshController,
-          onRefresh: _onRefresh,
-          child: CustomScrollView(
-            controller: scrollControllerParent,
-            slivers: [
-              // Header section - sesuai requirement Anda
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          const Text(
-                            "Artikel",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              print("Lihat Semua diklik");
-                              // context.pushRoute(PresensiAllPresensiRoute());
-                            },
-                            child: Text(
-                              "Lihat Semua",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+    return Scrollbar(
+      controller: scrollController,
+      child: PullRefreshComponent(
+        controller: refreshController,
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: kDefLeftRight,
+                  vertical: 16,
+                ),
+                child: _buildGreetingCard(cardTheme, greeting),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: kDefLeftRight,
+                  vertical: 8,
+                ),
+                child: GridMenuIconComponent(
+                  menuItems: menuItems,
+                  onLihatSemua: _onLihatSemua,
                 ),
               ),
-
-              // Posts pagination section menggunakan infinite_scroll_pagination
-              PagingListener<int, DashboardPostsEntity>(
-                controller: pagingController,
-                builder: (context, state, fetchNextPage) {
-                  return PagedSliverList<int, DashboardPostsEntity>(
-                    state: state,
-                    fetchNextPage: fetchNextPage,
-                    builderDelegate: PagedChildBuilderDelegate<DashboardPostsEntity>(
-                      itemBuilder: (context, item, index) => _buildPostItem(item, index),
-
-                      // Error indicator untuk first page
-                      firstPageErrorIndicatorBuilder: (context) => _buildErrorIndicator(
-                        message: 'Failed to load posts',
-                        onRetry: () => pagingController.refresh(),
-                      ),
-
-                      // Error indicator untuk next pages
-                      newPageErrorIndicatorBuilder: (context) => _buildErrorIndicator(
-                        message: 'Failed to load more posts',
-                        onRetry: () => {},
-                      ),
-
-                      // Loading indicator untuk first page dengan shimmer
-                      firstPageProgressIndicatorBuilder: (context) =>
-                          _buildShimmerLoading(context),
-
-                      // Loading indicator untuk next pages
-                      newPageProgressIndicatorBuilder: (context) =>
-                      const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-
-                      // No items indicator
-                      noItemsFoundIndicatorBuilder: (context) =>
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.inbox_outlined,
-                                size: 64,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'No posts found',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // No more items indicator (optional)
-                      noMoreItemsIndicatorBuilder: (context) =>
-                      const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Center(
-                          child: Text(
-                            'Tidak ada lagi Artikel',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Pengumuman',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            BlocBuilder<
+              DashboardPostsAnnouncementCubit,
+              DashboardPostsAnnoucementState
+            >(
+              builder: (context, state) {
+                return switch (state) {
+                  DashboardPostsAnnoucementLoading() => SliverToBoxAdapter(
+                    child: HomeAnnoucementSliderShimmerView(),
+                  ),
+                  DashboardPostsAnnoucementSuccess() => SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: kDefLeftRight),
+                      child: HomeAnnouncementSliderView(
+                        announcements: context
+                            .read<DashboardPostsAnnouncementCubit>()
+                            .getAnnouncements(),
+                        onSelengkapnyaTap: (announcement) {
+                          // Handle tap action
+                          print(
+                            'Selengkapnya tapped for: ${announcement.postTitle}',
+                          );
+                          // Navigasi ke detail page
+                          // context.p[ushRoute(DetailRoute(slug: announcement.slug));
+                        },
                       ),
                     ),
-                  );
-                },
+                  ),
+
+                  // TODO: Handle this case.
+                  DashboardPostsAnnoucementState() => SliverToBoxAdapter(
+                    child: SizedBox.shrink(),
+                  ),
+                };
+              },
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'Artikel',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
               ),
-            ],
-          ),
+            ),
+            PagingListener<int, DashboardPostsEntity>(
+              controller: pagingController,
+              builder: (context, state, fetchNextPage) {
+                return PagedSliverList<int, DashboardPostsEntity>(
+                  state: state,
+                  fetchNextPage: fetchNextPage,
+                  builderDelegate:
+                      PagedChildBuilderDelegate<DashboardPostsEntity>(
+                        itemBuilder: (context, item, index) =>
+                            HomeArticleItemView(item: item, index: index),
+                        firstPageErrorIndicatorBuilder: (context) =>
+                            HomeArticleErrorIndicatorView(
+                              message: 'Failed to load posts',
+                              onRetry: pagingController.refresh,
+                            ),
+                        newPageErrorIndicatorBuilder: (context) =>
+                            HomeArticleErrorIndicatorView(
+                              message: 'Failed to load more posts',
+                              onRetry: () {},
+                            ),
+                        firstPageProgressIndicatorBuilder: (context) =>
+                            HomeArticleShimmerView(itemCount: 5),
+                        newPageProgressIndicatorBuilder: (context) =>
+                            const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        noItemsFoundIndicatorBuilder: (context) => const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(32),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.inbox_outlined,
+                                  size: 64,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  'No posts found',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        noMoreItemsIndicatorBuilder: (context) => const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(
+                            child: Text(
+                              'Tidak ada lagi Artikel',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                      ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // Widget shimmer loading untuk first page
-  Widget _buildShimmerLoading(BuildContext context) {
-    return Column(
-      children: List.generate(
-        5, // Jumlah shimmer items
-            (index) => _buildShimmerPostItem(context),
-      ),
-    );
-  }
-
-  // Widget shimmer untuk single post item
-  Widget _buildShimmerPostItem(BuildContext context) {
+  Widget _buildGreetingCard(CardTheme cardTheme, String greeting) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          colors: cardTheme.gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 4,
+            color: cardTheme.gradientColors[0].withOpacity(0.3),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: Row(
-          children: [
-            // Image shimmer - Di sebelah kiri
-            Container(
-              height: 100,
-              width: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(8),
-              ),
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(12),
             ),
-
-            const SizedBox(width: 16),
-
-            // Content shimmer - Di sebelah kanan
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Time shimmer
-                  Row(
-                    children: [
-                      Container(
-                        height: 16,
-                        width: 16,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Container(
-                        height: 12,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Title shimmer - 2 lines
-                  Container(
-                    height: 14,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    height: 14,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Category and Author shimmer
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Category shimmer
-                      Container(
-                        height: 20,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-
-                      // Author shimmer
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            height: 14,
-                            width: 14,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(7),
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Container(
-                            height: 10,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPostItem(DashboardPostsEntity item, int index) {
-    return InkWell(
-      onTap: (){},
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Image Section - Di sebelah kiri
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                imageUrl: item.featureImage ?? '',
-                height: 100,
-                width: 80,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  height: 100,
-                  width: 80,
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                    ),
+            child: Icon(cardTheme.icon, size: 24, color: cardTheme.textColor),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Halo, $greeting',
+                  style: TextStyle(
+                    color: cardTheme.subTextColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                errorWidget: (context, url, error) => Container(
-                  height: 100,
-                  width: 80,
-                  color: Colors.grey[200],
-                  child: Icon(
-                    Icons.broken_image,
-                    size: 32,
-                    color: Colors.grey[400],
+                const SizedBox(height: 4),
+                Text(
+                  'Ahmad Abi Mulya',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: cardTheme.textColor,
                   ),
                 ),
-              ),
+              ],
             ),
-
-            const SizedBox(width: 16),
-
-            // Content Section - Di sebelah kanan
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Time Section
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        IndonesianDateTimeUtil.formatPostDate(item.postDate ?? ''),
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Title Section
-                  Text(
-                    item.postTitle ?? '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Category and Author Section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Category
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[50],
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.blue[200]!,
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          item.categories?[0] ?? '',
-                          style: TextStyle(
-                            color: Colors.blue[700],
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-
-                      // Author
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.person,
-                            size: 14,
-                            color: Colors.blueAccent,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            item.authorName ?? '',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorIndicator({
-    required String message,
-    required VoidCallback onRetry,
-  }) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 48,
-              color: Colors.red,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: onRetry,
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+void _onPresensiTap() => debugPrint('Presensi menu tapped');
+
+void _onLthTap() => debugPrint('LTH menu tapped');
+
+void _onLihatSemua() => debugPrint('Lihat Semua menu tapped');

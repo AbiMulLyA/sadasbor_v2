@@ -105,7 +105,7 @@ class PresensiInOutView extends HookWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
-                Expanded(
+/*                Expanded(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.logout),
                     label: const Text(
@@ -121,7 +121,7 @@ class PresensiInOutView extends HookWidget {
                     },
                     style: buttonStyle,
                   ),
-                ),
+                ),*/
               ],
             ),
           ],

@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import 'package:sadasbor_v2/core/usecases/usecase.dart';
 import 'package:sadasbor_v2/features/dashboard/data/datasources/remote/dashboard_bkpsdm_remote_data_source.dart';
 import 'package:sadasbor_v2/features/dashboard/data/models/posts/dashboard_posts_model.dart';
+import 'package:sadasbor_v2/features/dashboard/domain/usecases/posts/dashboard_posts_param.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/models/paging/paging_model.dart';
@@ -28,13 +29,13 @@ class DashboardRepositoryImpl implements DashboardRepository {
 
   @override
   Future<Either<Failure, PagingModel<DashboardPostsModel>>> getPosts(
-    int page,
+    DashboardPostsParam param,
   ) async {
     if (await connectionUtil.checkConnection()) {
       debugPrint('$runtimeType.profile: 1');
       try {
 
-        final httpResponse = await bkpsdmRemoteDataSource.getPosts(page);
+        final httpResponse = await bkpsdmRemoteDataSource.getPosts(param);
         debugPrint("$runtimeType :${httpResponse.response}");
 
         if (httpResponse.response.statusCode == HttpStatus.ok) {

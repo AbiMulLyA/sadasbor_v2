@@ -5,6 +5,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:sadasbor_v2/core/models/paging/paging_model.dart';
 import 'package:sadasbor_v2/features/dashboard/domain/entities/posts/dashboard_posts_entity.dart';
 
+import '../../../domain/usecases/posts/dashboard_posts_param.dart';
 import '../../models/posts/dashboard_posts_model.dart';
 
 part 'dashboard_bkpsdm_remote_data_source.g.dart';
@@ -19,6 +20,6 @@ abstract class DashboardBkpsdmRemoteDataSource {
 
   @GET('/posts')
   Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts(
-      @Query('page') int page
+      @Queries() DashboardPostsParam param,
       );
 }

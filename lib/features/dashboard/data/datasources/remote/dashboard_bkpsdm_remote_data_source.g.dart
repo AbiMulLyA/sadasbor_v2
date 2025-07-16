@@ -20,10 +20,11 @@ class _DashboardBkpsdmRemoteDataSource
 
   @override
   Future<HttpResponse<PagingModel<DashboardPostsModel>>> getPosts(
-    int page,
+    DashboardPostsParam param,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'page': page};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(param.toJson());
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =

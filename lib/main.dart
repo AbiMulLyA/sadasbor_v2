@@ -12,6 +12,7 @@ import 'package:flutter_hooks/flutter_hooks.dart'; // Ditambahkan impor flutter_
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:sadasbor_v2/features/dashboard/presentation/pages/smart_dashboard_page.dart';
 
 import 'config/api/sadasbor_api.dart';
 import 'config/injector/injector.dart';
@@ -27,6 +28,7 @@ import 'core/utils/error_util.dart';
 import 'core/utils/global_util.dart';
 import 'core/utils/theme_util.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/dashboard/presentation/pages/animated_dashboard_page.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
 
 Future<void> main() async {
@@ -218,7 +220,7 @@ class MainPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // Langsung mengembalikan DashboardPage, kode stateful yang tidak perlu dihapus
-    return const DashboardPage();
+    return const AnimatedDashboardPage();
   }
 }
 
