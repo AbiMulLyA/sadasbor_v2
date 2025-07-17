@@ -79,7 +79,7 @@ class GridMenuIconComponent extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 4,
+      elevation: 1.5,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         child: menuContent,
@@ -107,7 +107,7 @@ class _GridMenuIcon extends StatelessWidget {
     final theme = Theme.of(context);
     final iconColor = isDisabled
         ? theme.disabledColor
-        : theme.colorScheme.primary.withOpacity(0.93);
+        : theme.colorScheme.secondary.withOpacity(0.93);
 
     return InkWell(
       onTap: isDisabled || label.isEmpty ? null : onTap,

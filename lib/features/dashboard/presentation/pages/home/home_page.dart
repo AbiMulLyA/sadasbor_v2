@@ -100,7 +100,7 @@ class HomePage extends HookWidget {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Text(
                   'Pengumuman',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -144,7 +144,7 @@ class HomePage extends HookWidget {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: Text(
                   'Artikel',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

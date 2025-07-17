@@ -39,7 +39,7 @@ class ErrorUtil {
   Widget widgetError(BuildContext context, FlutterErrorDetails? error) {
     if (kDebugMode) {
       return Scaffold(
-        backgroundColor: AccurateColor.whiteAccurate,
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Center(
           child: Padding(
             padding: EdgeInsets.all(35),
@@ -71,7 +71,7 @@ class ErrorUtil {
     }
 
     return Scaffold(
-      backgroundColor: AccurateColor.whiteAccurate,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(35),

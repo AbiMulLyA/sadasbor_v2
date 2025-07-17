@@ -108,11 +108,10 @@ class HomeArticleItemView extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  // Category and Author Section
+                  // Category and Author Section - Improved Layout
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Category
+                      // Category - Fixed width to prevent expansion
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -136,25 +135,34 @@ class HomeArticleItemView extends StatelessWidget {
                         ),
                       ),
 
-                      // Author
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.person,
-                            size: 14,
-                            color: Colors.blueAccent,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            item.authorName ?? '',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
+                      const SizedBox(width: 8),
+
+                      // Author - Flexible to handle overflow
+                      Expanded(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.person,
+                              size: 14,
+                              color: Colors.blueAccent,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                item.authorName ?? '',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

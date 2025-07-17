@@ -14,14 +14,14 @@ class ThemeBloc extends HydratedBloc<ThemeEvent, ThemeState> {
     : super(
         ThemeState(
           themeType: 'ThemeType.defaults',
-          themeData: accurateTheme[ThemeType.defaults],
+          themeData: sadasborTheme[ThemeType.defaults],
         ),
       ) {
     on<SwitchEv>((event, emit) async {
       emit(
         ThemeState(
           themeType: event.themeType.toString(),
-          themeData: accurateTheme[event.themeType],
+          themeData: sadasborTheme[event.themeType],
         ),
       );
     });
@@ -46,18 +46,18 @@ class ThemeBloc extends HydratedBloc<ThemeEvent, ThemeState> {
 
   ThemeData? _mapStringToData(String themeType) {
     if (themeType == 'ThemeType.light') {
-      return accurateTheme[ThemeType.light];
+      return sadasborTheme[ThemeType.light];
     } else if (themeType == 'ThemeType.dark') {
-      return accurateTheme[ThemeType.dark];
+      return sadasborTheme[ThemeType.dark];
     } else {
-      return accurateTheme[ThemeType.defaults];
+      return sadasborTheme[ThemeType.defaults];
     }
   }
 
   String _mapDataToString(ThemeData themeData) {
-    if (themeData == accurateTheme[ThemeType.light]) {
+    if (themeData == sadasborTheme[ThemeType.light]) {
       return 'ThemeType.light';
-    } else if (themeData == accurateTheme[ThemeType.dark]) {
+    } else if (themeData == sadasborTheme[ThemeType.dark]) {
       return 'ThemeType.dark';
     } else {
       return 'ThemeType.defaults';

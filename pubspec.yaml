@@ -81,6 +81,7 @@ flutter:
   assets:
     - assets/lang/
     - assets/icon/
+    - assets/logo/
   # Untuk menambahkan font khusus ke aplikasi Anda, tambahkan bagian font di sini.
   # fonts:
   #   - family: Schyler
