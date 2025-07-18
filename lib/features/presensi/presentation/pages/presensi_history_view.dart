@@ -40,6 +40,25 @@ class PresensiHistoryView extends HookWidget {
         statusPulang: "Pulang Cepat",
         tepatWaktuPulang: false,
       ),
+      HistoryItem(
+        jamDatang: "08:15:10 WIB",
+        tanggal: "Selasa, 01 Juli 2025",
+        statusDatang: "Terlambat",
+        tepatWaktuDatang: false,
+        jamPulang: "17:05:50 WIB",
+        statusPulang: "Lembur",
+        // Example of another status for pulang
+        tepatWaktuPulang: true, // Assuming lembur is also "good" or "green"
+      ),
+      HistoryItem(
+        jamDatang: "07:55:00 WIB",
+        tanggal: "Rabu, 02 Juli 2025",
+        statusDatang: "Tepat Waktu",
+        tepatWaktuDatang: true,
+        jamPulang: "14:00:00 WIB",
+        statusPulang: "Pulang Cepat",
+        tepatWaktuPulang: false,
+      ),
     ];
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -76,7 +95,7 @@ class PresensiHistoryView extends HookWidget {
           ),
           const SizedBox(height: 16),
           ListView.separated(
-            itemCount: historyList.length > 3 ? 3 : historyList.length,
+            itemCount: historyList.length > 5 ? 5 : historyList.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) => const SizedBox(height: 12),

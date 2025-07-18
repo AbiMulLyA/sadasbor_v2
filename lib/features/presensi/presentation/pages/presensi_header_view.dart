@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'dart:async';
 
 class PresensiHeaderView extends HookWidget {
   const PresensiHeaderView({super.key});
@@ -16,18 +17,6 @@ class PresensiHeaderView extends HookWidget {
       duration: const Duration(milliseconds: 500),
     );
 
-    // Realtime clock state
-    final currentTime = useState<DateTime>(DateTime.now());
-
-    // Timer untuk update waktu realtime
-    useEffect(() {
-      final timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-        currentTime.value = DateTime.now();
-      });
-
-      return () => timer.cancel();
-    }, []);
-
     useEffect(() {
       animationController.forward();
       return null;
@@ -40,133 +29,23 @@ class PresensiHeaderView extends HookWidget {
       child: FadeTransition(
         opacity: animationController,
         child: SlideTransition(
-          position: Tween<Offset>(
+          position:
+          Tween<Offset>(
             begin: const Offset(0, -0.2),
             end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animationController,
-            curve: Curves.easeOutBack,
-          )),
+          ).animate(
+            CurvedAnimation(
+              parent: animationController,
+              curve: Curves.easeOutBack,
+            ),
+          ),
           child: Column(
             children: [
-              // Top Section - Greeting and DateTime
-              _buildTopSection(context, currentTime.value),
-
-              const SizedBox(height: 12),
-
               // Main Card - Avatar, Name, NIP, Position
               _buildMainCard(context, imageUrl),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopSection(BuildContext context, DateTime currentTime) {
-    // Format tanggal Indonesia
-    final List<String> dayNames = [
-      'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'
-    ];
-    final List<String> monthNames = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    ];
-
-    final dayName = dayNames[currentTime.weekday % 7];
-    final monthName = monthNames[currentTime.month - 1];
-    final dateString = '$dayName, ${currentTime.day} $monthName';
-    final timeString = '${currentTime.hour.toString().padLeft(2, '0')}:${currentTime.minute.toString().padLeft(2, '0')}:${currentTime.second.toString().padLeft(2, '0')}';
-
-    return Container(
-      // Added padding untuk spacing yang lebih baik
-      padding: const EdgeInsets.only(top: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Greeting
-          Text(
-            'Selamat Datang,',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          // Compact DateTime Card - Enhanced
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFFFFF0BB),
-                  const Color(0xFFFFF0BB).withOpacity(0.9),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFFFF0BB).withOpacity(0.4),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                  spreadRadius: 0,
-                ),
-              ],
-              border: Border.all(
-                color: const Color(0xFFFFF0BB).withOpacity(0.6),
-                width: 0.5,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.calendar_today_rounded,
-                  size: 14,
-                  color: Colors.brown,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  dateString,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.brown,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 1,
-                  height: 12,
-                  color: Colors.brown.withOpacity(0.4),
-                ),
-                const SizedBox(width: 8),
-                const Icon(
-                  Icons.access_time_rounded,
-                  size: 14,
-                  color: Colors.brown,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  timeString,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.brown,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'monospace',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -200,21 +79,17 @@ class PresensiHeaderView extends HookWidget {
         ],
       ),
       child: Card(
-        elevation: 0, // Remove default elevation since we're using custom shadow
+        elevation: 0,
+        // Remove default elevation since we're using custom shadow
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Colors.white,
-                const Color(0xFFFFF0BB).withOpacity(0.2),
-              ],
+              colors: [Colors.white, const Color(0xFFFFF0BB).withOpacity(0.2)],
             ),
             // Add subtle border for more definition
             border: Border.all(
@@ -368,36 +243,6 @@ class PresensiHeaderView extends HookWidget {
             ),
           ),
         ),
-
-        // Status Indicator - Enhanced
-        Positioned(
-          bottom: 2,
-          right: 2,
-          child: Container(
-            width: 18, // Slightly larger
-            height: 18,
-            decoration: BoxDecoration(
-              color: Colors.green.shade600,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white,
-                width: 2.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.green.withOpacity(0.3),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 11,
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -427,10 +272,7 @@ class PresensiHeaderView extends HookWidget {
                 spreadRadius: 0,
               ),
             ],
-            border: Border.all(
-              color: iconColor.withOpacity(0.1),
-              width: 0.5,
-            ),
+            border: Border.all(color: iconColor.withOpacity(0.1), width: 0.5),
           ),
           child: Icon(
             icon,

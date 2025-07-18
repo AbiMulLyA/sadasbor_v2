@@ -1,4 +1,4 @@
-// // ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,12 +27,10 @@ final ThemeData themeLight = ThemeData(
     centerTitle: false,
   ),
   colorScheme: const ColorScheme(
-    // primary: Color(0xFF0077D5),
-    primary:  Color(0xFFFFF0BB),
+    primary: Color(0xFFFFF0BB),
     primaryContainer: Color(0xFF042f62),
     secondary: Color(0xFFFFB800),
     secondaryContainer: Color(0xFFFFF6D5),
-    // secondaryContainer: Color(0xFFFFF0BB),
     surface: Color(0xFFFFFFFF),
     background: Color(0xFFF8F9FB),
     error: Color(0xFFD32F2F),
@@ -43,6 +41,65 @@ final ThemeData themeLight = ThemeData(
     onError: Color(0xFFFFFFFF),
     brightness: Brightness.light,
   ),
+
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFF0077D5),
+      foregroundColor: const Color(0xFFFFFFFF),
+      elevation: 2,
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      textStyle: GoogleFonts.firaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: const Color(0xFF0077D5), // Biru eksplisit
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      textStyle: GoogleFonts.firaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: const Color(0xFF0077D5), // Biru eksplisit
+      side: const BorderSide(
+        color: Color(0xFF0077D5), // Border biru eksplisit
+        width: 1.5,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      textStyle: GoogleFonts.firaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+
   textTheme: TextTheme(
     headlineLarge: GoogleFonts.firaSans(
         color: const Color(0xFF484848), fontSize: 20, fontWeight: FontWeight.w600),
@@ -65,7 +122,8 @@ final ThemeData themeDark = ThemeData(
     centerTitle: false,
   ),
   colorScheme: const ColorScheme(
-    primary: Color(0xFF0077D5),
+    // UNTUK DARK THEME, TETAP GUNAKAN BIRU SEBAGAI PRIMARY
+    primary: Color(0xFF0077D5), // Biru untuk dark theme
     primaryContainer: Color(0xFF042f62),
     secondary: Color(0xFFFFB800),
     secondaryContainer: Color(0xFF2C2C2E),
@@ -79,6 +137,65 @@ final ThemeData themeDark = ThemeData(
     onError: Color(0xFF000000),
     brightness: Brightness.dark,
   ),
+
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFF0077D5), // Biru eksplisit
+      foregroundColor: const Color(0xFFFFFFFF), // Putih eksplisit
+      elevation: 2,
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      textStyle: GoogleFonts.firaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: const Color(0xFF0077D5), // Biru eksplisit
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      textStyle: GoogleFonts.firaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: const Color(0xFF0077D5), // Biru eksplisit
+      side: const BorderSide(
+        color: Color(0xFF0077D5), // Border biru eksplisit
+        width: 1.5,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      textStyle: GoogleFonts.firaSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+
   textTheme: TextTheme(
     headlineLarge: GoogleFonts.firaSans(
         color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),

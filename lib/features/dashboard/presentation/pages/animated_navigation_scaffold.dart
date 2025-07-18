@@ -159,6 +159,87 @@ class _AnimatedNavigationScaffoldState
           ),
         ],
       ),
+      child: Builder(
+        builder: (context) => Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            iconSize: 24,
+            elevation: 0,
+            currentIndex: selectedIndex,
+            enableFeedback: true,
+            // warna label & icon
+            selectedItemColor: const Color(0xFF484848),
+            unselectedItemColor: const Color(0xFF484848),
+            backgroundColor: Colors.white,
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
+            onTap: widget.onIndexChanged,
+            items: widget.navItems.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              final isSelected = index == selectedIndex;
+
+              return BottomNavigationBarItem(
+                icon: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  // geser sedikit ke atas saat selected
+                  padding: EdgeInsets.only(top: isSelected ? 2 : 5),
+                  child: AnimatedScale(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
+                    // zoom sedikit saat selected
+                    scale: isSelected ? 1.1 : 1.0,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? const Color(0xFFFFB800).withOpacity(0.15)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                          isSelected
+                              ? const Color(0xFFFFB800)
+                              : const Color(0xFF8B8B8B),
+                          BlendMode.srcIn,
+                        ),
+                        child: item['icon'] as Widget,
+                      ),
+                    ),
+                  ),
+                ),
+                label: item['label'].toString(),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+/*  Widget _buildBottomNavigationBar(int selectedIndex) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 12,
@@ -200,5 +281,5 @@ class _AnimatedNavigationScaffoldState
         }).toList(),
       ),
     );
-  }
+  }*/
 }

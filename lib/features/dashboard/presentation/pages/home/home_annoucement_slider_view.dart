@@ -58,7 +58,7 @@ class HomeAnnouncementSliderView extends HookWidget {
           // Dots Indicator (hanya tampil jika ada lebih dari 1 item)
           if (announcements.length > 1) ...[
             const SizedBox(height: 12),
-            _buildDotsIndicator(currentIndex.value),
+            _buildDotsIndicator( context,currentIndex.value),
           ],
         ],
       ),
@@ -189,7 +189,7 @@ class HomeAnnouncementSliderView extends HookWidget {
     );
   }
 
-  Widget _buildDotsIndicator(int currentIndex) {
+  Widget _buildDotsIndicator(BuildContext context, int currentIndex) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: announcements.asMap().entries.map((entry) {
@@ -201,7 +201,7 @@ class HomeAnnouncementSliderView extends HookWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: currentIndex == index
-                ? Colors.blue
+                ? Theme.of(context).colorScheme.secondary
                 : Colors.grey.withOpacity(0.5),
           ),
         );
