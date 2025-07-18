@@ -104,24 +104,6 @@ class PresensiInOutView extends HookWidget {
                     style: buttonStyle,
                   ),
                 ),
-                const SizedBox(width: 16),
-/*                Expanded(
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.logout),
-                    label: const Text(
-                      "Absen Pulang",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {
-                      // TODO: Logika untuk Clock Out
-                      print("Clock Out tapped");
-                      context.pushRoute(
-                        PresensiWriteAttendanceRoute(title: 'Jam Pulang'),
-                      );
-                    },
-                    style: buttonStyle,
-                  ),
-                ),*/
               ],
             ),
           ],

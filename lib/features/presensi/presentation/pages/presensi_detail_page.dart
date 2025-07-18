@@ -41,7 +41,7 @@ class PresensiDetailData {
 
 @RoutePage()
 class PresensiDetailPage extends HookWidget {
-  const PresensiDetailPage({super.key /* Tambahkan parameter jika butuh ID presensi */});
+  const PresensiDetailPage({super.key});
 
   Widget _buildSyncStatusIndicator(BuildContext context, bool isSynced, VoidCallback onSyncAction) {
     IconData syncIconData;
@@ -227,11 +227,6 @@ class PresensiDetailPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // _buildSyncStatusIndicator(context, detail.isSynced, () {
-            //   print("Tombol Sinkronkan (dari state) ditekan!");
-            // }),
-            // const SizedBox(height: 10), // Dihapus karena _buildSyncStatusIndicator sudah punya margin-bottom
-            // const Text("Contoh Tampilan Jika Sudah Tersinkron:", style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.grey)),
             _buildSyncStatusIndicator(context, true, () {
               print("Tombol Sinkronkan (contoh synced) ditekan!");
             }),

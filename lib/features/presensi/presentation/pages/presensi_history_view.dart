@@ -53,7 +53,7 @@ class PresensiHistoryView extends HookWidget {
               const Text(
                 "Riwayat Presensi",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),

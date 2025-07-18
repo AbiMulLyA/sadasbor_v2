@@ -11,24 +11,9 @@ import '../router/router.dart';
 import 'injector.config.dart';
 
 final getIt = GetIt.instance;
-
-// final SadasborApi sadasborApi = getIt<SadasborApi>();
-
-//* Initial Getit
-// @InjectableInit(
-//   initializerName: 'initCoreGetIt', // default\
-//   generateForDir: ['lib/config','lib/core'],
-//   preferRelativeImports: true,
-// )
-// configureConfigScope() => getIt.initCoreScope();
 @injectableInit
 Future<void> configureInjector(String environment) =>
     getIt.init(environment: environment);
-// configuresadasborApiScope() => getIt.initsadasborApiScope();
-// configureConfigInjector(environment) =>
-//     getIt.initCoreGetIt(environment: environment);
-
-//* For ThirdParty Plugins
 @module
 abstract class RegisterModule {
   @lazySingleton
@@ -37,9 +22,6 @@ abstract class RegisterModule {
 
   @lazySingleton
   FlutterSecureStorage get storage => const FlutterSecureStorage();
-
-  // @Named("KinerjaBaseUrl")
-  // String get kinerjaBaseUrl => sadasborApi.baseUrl();
 
   @lazySingleton
   Dio dio() => Dio(
